@@ -19,15 +19,16 @@ ln -s ${MAINPATH}/etc/my.cnf /etc/my.cnf
 
 rm -rf /usr/local/nginx/conf/nginx.conf
 ln -s ${MAINPATH}/etc/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
-rm -rf /usr/local/nginx/conf/available-sites/base
-rm -rf /usr/local/nginx/conf/available-sites/huluo
-ln -s ${MAINPATH}/etc/nginx/base    /usr/local/nginx/conf/available-sites/base
-ln -s ${MAINPATH}/etc/nginx/huluo   /usr/local/nginx/conf/available-sites/huluo
+rm -rf /usr/local/nginx/conf/vhost/base
+ln -s ${MAINPATH}/etc/nginx/base    /usr/local/nginx/conf/vhost/base
+rm -rf /usr/local/nginx/conf/vhost/huluo
+ln -s ${MAINPATH}/etc/nginx/huluo   /usr/local/nginx/conf/vhost/huluo
 
 rm /etc/supervisord.conf
 ln -s ${MAINPATH}/etc/supervisord.conf /etc/supervisord.conf
+mkdir /etc/supervisord.conf.d
 rm -rf /etc/supervisord.conf.d/base
-rm -rf /etc/supervisord.conf.d/huluo
 ln -s ${MAINPATH}/etc/supervisor/base   /etc/supervisord.conf.d/base
+rm -rf /etc/supervisord.conf.d/huluo
 ln -s ${MAINPATH}/etc/supervisor/huluo  /etc/supervisord.conf.d/huluo
 
