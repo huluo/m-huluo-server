@@ -1,0 +1,49 @@
+<div class="rgbase rgfalls">
+    <ul class="list-inline rgtitle">
+        <li style="padding:0px 10px 0px 0px;" ><h4 style="color:white;">搜索结果 : </h4></li>
+        <li style="padding:0px 10px 0px 0px;"><h5 style="color:white;"> {{len(p_matches['list'])}} </h5></li>
+    </ul>
+    {% if len(p_matches['list']) > 0 %}
+    <div class="rgmatch" >
+        <div>
+        <section>
+            <ul id="ridfn" class="rgfn_container rgulleast" >
+            {% for t_index in range(0,len(p_matches['list'])) %}
+                {% set t_urlid = p_matches['list'][t_index] %}
+                {% set t_item = p_matches['dict'][t_urlid] %}
+                {% set t_response = p_responses[t_index] %}
+
+                {% set t_appid = t_item['appid'] %}
+                {% set t_desc = t_item['desc'] %}
+                {% set t_title = t_item['title'] %}
+                {% set t_price = t_item['price'] %}
+                {% set t_item_imgs = t_item['item_imgs']['item_img'] %}
+                <li>
+                    <div class="rgimgbox rgfn" onclick="ItemClick('{{t_appid}}','{{t_urlid}}','{{t_title}}')"><div class="rgimgbox_pos"><div>
+                    <img style="display:none;" src="{{t_item_imgs[0]['url']}}" onload="DrawImage(this)" />
+                    <div class="infoLayer" style="width:100%;" >
+                        <div style="text-align:left;height:90px;background-color:black;">
+                        <ul>
+                            <li>
+                                <label>{{t_desc}}</label>
+                                <span style="position:absolute;right:0px;">
+                                    <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                    <label>{{len(t_response['likes'])}}</label>
+                                    <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                    <label>{{len(t_response['replies'])}}</label>
+                                </span>
+                            </li>
+                            <li><label>{{t_title}}</label></li>
+                        </ul>
+                        </div>
+                    </div>
+                    </div></div></div>
+                </li>
+            {% end %}
+            </ul>
+        </section>
+        </div>
+    </div>
+    {% end %}
+</div>
+

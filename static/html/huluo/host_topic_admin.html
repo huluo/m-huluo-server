@@ -1,0 +1,170 @@
+{% extends "host_base.html" %}
+{% block head %}
+<title>石墨设计&middot;个人主页</title>
+<style type="text/css">
+.rgnav {
+    display:none;
+}
+.rgpopview {
+    position: relative;
+    margin: 30px auto 0px auto;
+    padding: 20px;
+    background-color: white;
+    text-align: center;
+}
+.rgnodeadd {
+    width: 100%;
+}
+.rgnodeadd td {
+    border-top: solid 0px;
+}
+.table textarea {
+    height:70px;
+    width:90%
+}
+.rgsubnav .active a:hover {
+    background-color: #4d4e52;
+}
+</style>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    reload();
+});
+function reload() { 
+    var empty_pfx = '<table class="table"> <thead> <tr> <th style="width:20px"></th> <th style="width:110px">缩略图</th> <th style="width:140px">标题</th> <th style="max-width:300px">简介</th> <th style="width:280px">微信链接</th> <th style="width:80px">操作</th> <th style="width:20px"></th> </tr> </thead>'
+    $('#adminbox').html( empty_pfx+'<tbody><tr><td class="rgcenter" colspan=7><h5>正在加载数据 ...</h5></td></tr></tbody></table>' )
+    $.ajax({
+        url      : '{{p_url["host_topic_info"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf')},
+        dataType : 'html',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        $('#adminbox').html( empty_pfx+'<tbody><tr onclick="reload()"><td class="rgcenter" colspan=8><h5>加载超时，点击刷新</h5></td></tr></tbody></table>' )
+                   },
+        success  : function(result){
+                        $('#adminbox').html( result );
+                    }
+    });
+}
+function node_del_click(topicid,img,title,desc){
+    $('#nodedel_modal').attr('topicid',topicid);
+    $('#nodedel_img').attr('src',img);
+    $('#nodedel_title').text( title );
+    $('#nodedel_desc').text( desc );
+    $('#nodedel_modal').modal('toggle');
+}
+function node_del_ok(){
+    $('#nodedel_modal').modal('hide');
+    $.ajax({
+        url      : '{{p_url["api_topic_main_del"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'topicid':$('#nodedel_modal').attr('topicid')},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+function node_del_cancel(){
+    $('#nodedel_modal').modal('hide');
+}
+function node_sort_click(topicid,goingdown){
+    p = {};
+    if( goingdown ){
+        p = {'_xsrf':getCookie('_xsrf'),'topicid':topicid,'goingdown':goingdown};
+    } else {
+        p = {'_xsrf':getCookie('_xsrf'),'topicid':topicid};
+    }
+    $.ajax({
+        url      : '{{p_url["api_topic_main_sort"]}}',
+        type     : 'POST',
+        data     : p,
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<!-- Modal -->
+<div id="nodedel_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header hidden"> </div>
+    <div class="modal-body">
+        <div class="rgpopview" style="width:600px;height:450px;">
+            <div class="close" style="cursor:pointer;position:absolute;width:36px;height:36px;top:-18px;left:-18px;" data-dismiss="modal" aria-hidden="true">
+                <a href="javascript:void(0);" style="display:block;widtH:36px;height:36px;text-decoration:none;"><img src="/img/shimosheji/X1.png"></img></a>
+            </div>
+            <h4 class="muted">删除此帖？</h4>
+            <div class="thumbnails" style="margin:0 auto;width:400px;">
+                <div class="thumbnail">
+                    <img id="nodedel_img" class="img-rounded" style="height:200px;">
+                    <div class="caption">
+                        <h6 id="nodedel_title" class="muted"></h6>
+                        <p id="nodedel_desc"></p>
+                    </div>
+                </div>
+            </div>
+            <p><br>链接后,该帖将不再展示在客户端或者web页上，是否删除？</p>
+            <a href="javascript:void(0)" onclick="node_del_cancel()" class="btn">取消</a>
+            <a href="javascript:void(0)" onclick="node_del_ok()" class="btn btn-primary btn-success">删除</a>
+        </div>
+    </div>
+    <div class="modal-footer hidden"> </div>
+</div>
+
+<div class="rgbase">
+    <ul class="nav nav-pills rgsubnav">
+        <li class="active"><a>日报管理</a></li>
+        <li><a class="muted" href="{{p_url['host_topic_stat']}}">日报统计</a></li>
+    </ul>
+    <div class="rgmain">
+        <ul class="breadcrumb">
+            <li><a href="{{p_url['host_home']}}">&lt;&nbsp;返回</a></li>
+        </ul>
+        <div id="adminbox">
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

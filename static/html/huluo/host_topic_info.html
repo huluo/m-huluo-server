@@ -1,0 +1,199 @@
+<table class="table">
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#nodeadd_form').submit(function() { 
+        var new_img = $('#rid_add_img').val();
+        var new_title = $('#rid_add_title').val();
+        if( new_title.length == 0 ){
+            alert( '请填写标题' );
+            return;
+        }
+        if( new_title.length > 30 ){
+            alert( '标题请控制在30字以内' );
+            return;
+        }
+        var new_desc = $('#rid_add_desc').val();
+        if( new_desc.length > 120 ){
+            alert( '简介请控制在120字以内' );
+            return;
+        }
+        var new_url = $('#rid_add_url').val();
+        if( new_url.length == 0 ){
+            alert( '请填写微信链接' );
+            return;
+        }
+        var options = { 
+            url      : '{{p_url["api_topic_main_add"]}}',
+            type     : 'POST', 
+            dataType : 'json',
+            data     : {'_xsrf':getCookie('_xsrf'),'new_img':new_img,'new_title':new_title,'new_desc':new_desc,'new_url':new_url},
+            success  : function(data){
+                $('#nodeadd_msg').text(data.msg);
+                $('#nodeadd_submit').attr('disabled',false);
+                if( data.op==true){
+                    $('#nodeadd_submit').text('添加成功');
+                    reload();
+                }else{
+                    $('#nodeadd_submit').text('添加');
+                }
+            },
+            error    : function(){
+                $('#nodeadd_submit').text('添加');
+                $('#nodeadd_msg').text('p_msg["err_500"]');
+                $('#nodeadd_submit').attr('disabled',false);
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#nodeadd_submit').text('正在添加...');
+                $('#nodeadd_submit').attr('disabled',true);
+            },
+        }; 
+        $('#nodeadd_form').ajaxSubmit(options); 
+        return false;
+    });
+});
+function hidenodeadd(){
+    $('#nodeadd_collapse').collapse('hide');
+}
+function node_edit_click(topicid) {
+    $('#rid_edit_'+topicid+'_img').val($('#rid_done_'+topicid+'_img').attr('src'));
+    $('#rid_edit_'+topicid+'_title').val($('#rid_done_'+topicid+'_title').text());
+    $('#rid_edit_'+topicid+'_desc').val($('#rid_done_'+topicid+'_desc').text());
+    $('#rid_edit_'+topicid+'_url').val($('#rid_done_'+topicid+'_url').text());
+    $('#rid_'+topicid+'_edit').show();
+    $('#rid_'+topicid+'_done').hide();
+}
+function node_edit_ok(topicid){
+    var new_img = $('#rid_edit_'+topicid+'_img').val();
+    var new_title = $('#rid_edit_'+topicid+'_title').val();
+    if( new_title.length == 0 ){
+        alert( '请填写标题' );
+        return;
+    }
+    if( new_title.length > 30 ){
+        alert( '标题请控制在30字以内' );
+        return;
+    }
+    var new_desc = $('#rid_edit_'+topicid+'_desc').val();
+    if( new_desc.length > 120 ){
+        alert( '简介请控制在120字以内' );
+        return;
+    }
+    var new_url = $('#rid_edit_'+topicid+'_url').val();
+    if( new_url.length == 0 ){
+        alert( '请填写微信链接' );
+        return;
+    }
+    $.ajax({
+        url      : '{{p_url["api_topic_main_update"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'topicid':topicid,'new_img':new_img,'new_title':new_title,'new_desc':new_desc,'new_url':new_url},
+        dataType : 'json',
+        timeout  : 5000,
+        success  : function(data){
+            reload();
+            /*
+            if( data.op==true){
+            }else{
+            }
+            */
+        },
+        error    : function(){
+            $('#rid_'+topicid+'_done').show();
+            $('#rid_'+topicid+'_edit').hide();
+            reload();
+        },
+        beforeSubmit: function(formData, jqForm, options){
+            //$('#nodeadd_url').attr('disabled',true);
+        },
+    });
+}
+function node_edit_cancel(topicid){
+    $('#rid_'+topicid+'_done').show();
+    $('#rid_'+topicid+'_edit').hide();
+}
+</script>
+<thead>
+    <tr>
+        <th style="width:20px"></th>
+        <th style="width:110px">图片</th>
+        <th style="width:140px">标题</th>
+        <th style="max-width:300px">简介</th>
+        <th style="width:280px">微信链接</th>
+        <th style="width:80px">操作</th>
+        <th style="width:20px"></th>
+
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td class="rgcenter" colspan=8>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#nodeadd_collapse"> + 添加内容 </a>
+                </div>
+                <div id="nodeadd_collapse" class="accordion-body collapse">
+                <form id="nodeadd_form">
+                    {% raw xsrf_form_html() %}
+                    <div style="margin-left:0px;">
+                        <table class="table rgnodeadd">
+                        <tbody>
+                        <tr>
+                            <td style="width:12px"></td>
+                            <td style="width:100px;word-wrap:break-word"><textarea id="rid_add_img"></textarea></td>
+                            <td style="width:140px;word-wrap:break-word"><textarea id="rid_add_title"></textarea></td>
+                            <td style="width:180px;word-wrap:break-word"><textarea id="rid_add_desc"></textarea></td>
+                            <td style="max-width:280px;word-wrap:break-word"><textarea id="rid_add_url"></textarea></td>
+                            <td style="width:80px">
+                                <button type="submit" id="nodeadd_submit" class="rgbtn" style="width:80px">添加</button>
+                            </td>
+                            <td style="width:12px"></td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                    <!-- <input type="text" class="input-block-level" id="nodeadd_url" name="url"> -->
+                    <a style="width:80px;" href="javascript:void(0)" onclick="hidenodeadd()">取消</a>
+                </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% for i in p_topics %}
+    {% set t_topicid = i['topicid'] %}
+    {% set t_title = i['title'] %}
+    {% set t_desc = i['desc'] %}
+    {% set t_url = i['url'] %}
+    {% set t_img = i['img'] %}
+    <tr id="rid_{{t_topicid}}_done">
+        <td style="width:20px"></td>
+        <td style="max-width:110px">
+            <div class="rgimgbox" style="width:100px;height:100px;"><div class="rgimgbox_pos"><div>
+            <img style="display:none;" id="rid_done_{{t_topicid}}_img" src="{{t_img}}" onload="DrawImage(this)" onclick="ImgClick('{{t_title}}','{{t_topicid}}','{{t_img}}')" />
+            </div></div></div>
+        </td>
+        <td style="max-width:140px;word-wrap:break-word"><span id="rid_done_{{t_topicid}}_title">{{t_title}}</span></td>
+        <td style="max-width:300px;word-wrap:break-word"><span id="rid_done_{{t_topicid}}_desc">{{t_desc}}</span></td>
+        <td style="max-width:280px;word-wrap:break-word"><span id="rid_done_{{t_topicid}}_url">{{t_url}}</span></td>
+        <td style="max-width:80px">
+            <div><a href="javascript:void(0)" onclick="node_edit_click({{t_topicid}})">编辑</a><img src="/img/shimosheji/up.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="node_sort_click({{t_topicid}},false)"></div>
+            <div style="height:10px"></div>
+            <div><a href="javascript:void(0)" onclick="node_del_click({{t_topicid}},'{{t_img}}','{{t_title}}','{{t_desc}}')">删除</a><img src="/img/shimosheji/down.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="node_sort_click({{t_topicid}},true)"></div>
+        </td>
+        <td style="width:20px"></td>
+    </tr>
+    <tr id="rid_{{t_topicid}}_edit" style="display:none;">
+        <td style="width:20px"></td>
+        <td style="max-width:110px;word-wrap:break-word"><textarea id="rid_edit_{{t_topicid}}_img"></textarea></td>
+        <td style="max-width:140px;word-wrap:break-word"><textarea id="rid_edit_{{t_topicid}}_title"></textarea></td>
+        <td style="max-width:300px;word-wrap:break-word"><textarea id="rid_edit_{{t_topicid}}_desc"></textarea></td>
+        <td style="max-width:280px;word-wrap:break-word"><textarea id="rid_edit_{{t_topicid}}_url"></textarea></td>
+        <td style="max-width:80px">
+            <div><a href="javascript:void(0)" onclick="node_edit_ok({{t_topicid}})">确定</a></div>
+            <div><a href="javascript:void(0)" onclick="node_edit_cancel({{t_topicid}})">取消</a></div>
+        </td>
+        <td style="width:20px"></td>
+    </tr>
+    {% end %}
+    <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+</tbody>
+</table>

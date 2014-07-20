@@ -1,0 +1,226 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;影视剧搜同款</title>
+<link href="css/least.min.css" rel="stylesheet" />
+<style type="text/css">
+html, body, #ridwrap {
+    height: 100%;
+}
+.rgfooter {
+    display: none;
+}
+body > #ridwrap {
+    height: auto;
+    min-height: 100%;
+    background-image:url('/img/shimosheji/app_bg.jpg');
+    background-repeat:repeat;
+    background-position-y:top;
+    background-position-x:0px;
+    background-color:#ffffff;
+}
+#ridmain {
+    padding-bottom: 1px;
+    position:absolute;
+    height:100%;
+    width:100%;
+    margin: 0px auto ;
+} /* 必须使用和ridbot相同的高度 */ 
+#ridbot {
+    position: relative; 
+    background-color:black;
+    margin-top: -1px; /* ridbot高度的负值 */ 
+    height: 1px;
+    clear:both;
+}
+.clearfix:after {
+    ridcon: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}
+#ridfloat {
+    position:absolute;
+    width:100%;
+    height:100%;
+    filter:alpha(opacity=76);
+    opacity:0.6;
+    top:60px;
+    left:0px;
+    background:#000;
+}
+#ridmain a {
+    color: #17afd8;
+}
+#ridmain a:hover {
+    color: #17afd8;
+    text-decoration:underline;
+    cursor:pointer;
+}
+.wrap {
+    height:100%;
+    text-align:center;
+    display:table-cell;
+    vertical-align:middle;
+}
+.container {
+    *display:inline-block;
+    vertical-align:middle;
+}
+.edge {
+    display:noen;
+    *display:inline-block;
+    vertical-align:middle;
+    width:0;
+    height:100%;
+}
+/* End hide from IE-mac */
+
+@media screen and (min-width:1200px){
+.rgmaintable {
+    margin:20px auto 0 auto;
+    height:100%;
+}
+.rgmaingap {
+    width:60px;
+}
+.rgmainright {
+    width:150px;
+}
+.rgimgword {
+    vertical-align:middle;
+}
+.rgimgandroid {
+}
+.rgimgios {
+}
+.rgimgthumb {
+}
+}
+@media screen and (min-width:768px) and (max-width:1200px){
+.rgmaintable {
+    margin:20px auto 0 auto;
+    height:100%;
+}
+.rgmaingap {
+    width:60px;
+}
+.rgmainright {
+    width:150px;
+}
+.rgimgword {
+    vertical-align:middle;
+}
+.rgimgandroid {
+}
+.rgimgios {
+}
+.rgimgthumb {
+}
+}
+@media screen and (max-width:768px){
+.rgmaintable {
+    margin:-120px auto 0px auto;
+    height:100%;
+}
+.rgmaingap {
+    width:0px;
+}
+.rgmainright {
+    width:0px;
+}
+.rgimgword {
+    vertical-align:middle;
+    width:150px;
+    height:87px;
+}
+.rgimgandroid {
+    width:150px;
+    height:50px;
+}
+.rgimgios {
+    width:150px;
+    height:50px;
+}
+.rgimgthumb {
+    width:135px;
+    height:285px;
+}
+}
+</style>
+<script type="text/javascript"> require(['jquery_lazyload','least']); </script>
+<script type="text/javascript">
+var time = 10; 
+var interval;
+var pos_x = 0;
+function start_mov_bg(){
+    interval = setInterval("mov_bg()",time);
+}
+function mov_bg(){
+    if(pos_x<-1808){
+        pos_x=0;
+    }
+    pos_x = pos_x-0.5;
+    $('#ridwrap').css( 'background-position-x', pos_x+'px');
+}
+require(['jquery','domReady!'], function(doc){
+    start_mov_bg();
+});
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<div id="ridwrap">
+    <div id="ridfloat"></div>
+    <div id="ridmain" class="clearfix">
+        <table class="rgmaintable">
+        <tbody> <tr> <td>
+        <div class="wrap">
+            <ul class="pull-right list-unstyled" >
+                <li style="text-align:right;margin:0 10px 0 0;"><img class="rgimgword" src="/img/shimosheji/app_intro.png"></li>
+                <li style="text-align:right;margin:80px 10px 0 0;">
+                    <a href="{{p_url['http_static']+p_url['client_android']+'-OFFICIAL.apk'}}" target="_blank"><img class="rgimgandroid" src="/img/shimosheji/app_down_android.png"></a>
+                </li>
+                <li style="text-align:right;margin:10px 10px 0 0;">
+                    <a href="{{p_url['client_ios']}}" target="_blank"><img class="rgimgios" src="/img/shimosheji/app_down_ios.png"></a>
+                </li>
+            </ul>
+        </div>
+        </td> <td class="rgmaingap"> </td> <td>
+        <div class="wrap">
+            <span class="container">
+                <img class="rgimgthumb" src="/img/shimosheji/app_hint.png">
+            </span>
+            <span class="edge"></span>
+        </div>
+        </td> <td class="rgmainright"> </td> </tr> </tbody>
+        </table>
+    </div>
+</div>
+<div id="ridbot" style="text-align:center;">
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

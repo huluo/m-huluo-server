@@ -1,0 +1,953 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;带着地图去旅行</title>
+<link href="/css/base/least.min.css" rel="stylesheet" />
+<link href="/css/base/showLoading.css" rel="stylesheet" media="screen">
+<style type="text/css">
+html, body, #ridwrap {
+    height: 100%;
+}
+body > #ridwrap {
+    height: auto;
+    min-height: 100%;
+    background-repeat:no-repeat;
+    background-position:bottom center;
+    background-color:#ffffff;
+}
+#ridmain {
+    text-align:center;
+    padding-bottom: 200px;
+} /* 必须使用和ridbot相同的高度 */ 
+#ridbot {
+    position: relative; 
+    background-color:#333333;
+    margin-top: -150px; /* ridbot高度的负值 */ 
+    height: 200px;
+    clear:both;
+}
+.clearfix:after {
+    ridcon: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}
+
+.rgbackhome {
+    display:none;
+}
+.carousel {
+    margin-bottom: 0;
+}
+.rgulleast {
+    margin:0 0 0 0;
+}
+.rgbnleft {
+    position:absolute;
+    display:block;
+    width:36px;
+    height:36px;
+    text-decoration:none;
+    left:35px;
+    top:45%;
+    z-index:99;
+}
+.rgbnleft:hover {
+    background:url(/img/shimosheji/left_2.png);
+}
+.rgbnleft:hover img{
+    visibility:hidden;
+}
+.rgbnright {
+    position:absolute;
+    display:block;
+    width:36px;
+    height:36px;
+    text-decoration:none;
+    right:5px;
+    top:45%;
+    z-index:99;
+}
+.rgbnright:hover {
+    background:url(/img/shimosheji/right_2.png);
+}
+.rgbnright:hover img{
+    visibility:hidden;
+}
+.rgmore {
+    width:100%;
+    height:50px;
+    margin:20px 0 0 0;
+    padding:5px 0 0 0;
+    background-color:#f3f3f3;
+    text-align:center;
+    -moz-border-radius:3px;
+    border-radius:3px;
+    border:1px solid #dfdfdf;
+    cursor:pointer;
+}
+.rgmore h5 {
+    color:#666666;
+    font-size:16px;
+}
+.rgmore:hover {
+    background-color:white;
+}
+.rgmore:hover a {
+    background:url(/img/shimosheji/down_2.png);
+}
+.rgmore:hover a img{
+    visibility:hidden;
+}
+.rgmore:hover h5 {
+    color:#333333;
+}
+.rgloading {
+    width:100%;
+    height:50px;
+    margin:20px 0 0 0;
+}
+.loading-indicator-overlay {
+    background-color:transparent;
+}
+section {
+    background-color:transparent;
+    text-align:left;
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+    box-shadow:0 0 0 0;
+}
+section li .infoLayer div {
+    margin: 0 0 0 0;
+    height:100%;
+    -webkit-transition: opacity 0.01s linear;
+    -moz-transition: opacity 0.01s linear;
+    -ms-transition: opacity 0.01s linear;
+    -o-transition: opacity 0.01s linear;
+    transition: opacity 0.01s linear;
+    opacity: 0.8;
+}
+section li .infoLayer ul {
+    padding: 13px 0 0 0;
+}
+section li .overLayer, section li .infoLayer {
+    top:auto;
+    bottom:0px;
+    height:90px;
+    -webkit-transition: opacity 0.01s linear;
+    -moz-transition: opacity 0.01s linear;
+    -ms-transition: opacity 0.01s linear;
+    -o-transition: opacity 0.01s linear;
+    transition: opacity 0.01s linear;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li:first-child {
+    width:auto;
+    margin:0px 13px 0px 13px;
+    border-bottom:0px solid;
+    height:25px;
+    padding:0;
+    border-bottom: 0px white solid;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li:first-child label {
+    color:white;
+    font-size:14px;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li {
+    width:auto;
+    margin:0px 13px 0px 13px;
+    padding:0;
+    height:40px;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li label {
+    color:#cccccc;
+    font-size:12px;
+}
+
+
+@media screen and (min-width:1200px){
+.rgcsbox {
+    min-width: 1200px;
+    max-width: 1200px;
+    height:484px;
+    margin:0 0 0 0;
+}
+.rgcs {
+    width:284px;
+    height:484px;
+}
+.rgbnul {
+    white-space:nowrap;
+}
+.rgbnli {
+    width:284px;
+    height:484px;
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+}
+.rgln {
+    height:400px;
+    padding-top:15px;
+}
+.rgln2 {
+    height:376px;
+    overflow:hidden;
+}
+.rgmn {
+    width:100%;
+    height:191px;
+    margin:6px 0px 0px 0px;
+}
+.rgrn_container {
+    padding:0px 0px 0px 0px;
+}
+.rgrn {
+    width:100%;
+    height:388px;
+    margin:6px 0px 6px 0px;
+}
+.rgfn_container {
+    margin:0px 0px 0px 0px;
+}
+.rgfn {
+    width:235px;
+    height:200px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.rgtitle {
+    line-height: 40px;
+    height: 40px;
+    padding-top: 10px;
+    margin:20px 0 10px 0;
+}
+.rgfalls {
+}
+.rgbot {
+    margin-top:-200px;
+    z-index:1;
+    position:relative;
+}
+.rgmatch {
+    position:relative;
+    background-color:#17afd8;
+    padding-top:5px;
+    padding-left:5px;
+}
+.rgsearch {
+    position:absolute;
+    width:100%;
+    bottom:300px;
+}
+.rgsearchbtn {
+    padding-left:0px;
+    text-align:left;
+    margin-left:0px;
+}
+.rgbanner {
+    margin: 0px auto;
+    min-width: 1200px;
+    max-width: 1200px;
+    border-bottom: 1px solid #cccccc;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc',endColorstr='#ffffff',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,1.0),0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,1.0),0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 0 0 0,0 1px 1px rgba(255,255,255,1.0);
+}
+.rgbanner .carousel-indicators .active {
+    background-color: #17afd8;
+}
+.rgbanner .carousel-indicators li {
+    cursor:pointer;
+    background-color: #c5c5c5;
+    width:7px;
+    height:7px;
+    margin-left:13px;
+}
+}
+@media screen and (min-width:768px) and (max-width:1200px){
+.rgcsbox {
+    min-width: 768px;
+    max-width: 768px;
+    height:384px;
+    margin:0 0 0 0;
+}
+.rgcs {
+    width:225px;
+    height:384px;
+}
+.rgbnul {
+    white-space:nowrap;
+}
+.rgbnli {
+    width:225px;
+    height:384px;
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+}
+.rgln {
+    height:400px;
+    padding-top:15px;
+}
+.rgln2 {
+    height:376px;
+    overflow:hidden;
+}
+.rgmn {
+    width:100%;
+    height:191px;
+    margin:6px 0px 0px 0px;
+}
+.rgrn_container {
+    padding:0px 0px 0px 0px;
+}
+.rgrn {
+    width:100%;
+    height:191px;
+    margin:6px 0px 0px 0px;
+}
+.rgfn_container {
+    margin:0px 0px 0px 0px;
+}
+.rgfn {
+    width:250px;
+    height:230px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.rgtitle {
+    line-height: 40px;
+    height: 50px;
+    padding-top: 20px;
+    margin:20px 0 10px 0;
+}
+.rgfalls {
+}
+.rgbot {
+    margin-top:-200px;
+    z-index:1;
+    position:relative;
+}
+.rgmatch {
+    position:relative;
+    background-color:#17afd8;
+    padding-top:5px;
+    padding-left:5px;
+}
+.rgsearch {
+    position:absolute;
+    width:100%;
+    bottom:300px;
+}
+.rgsearchbtn {
+    padding-left:0px;
+    text-align:left;
+    margin-left:0px;
+}
+.rgbanner {
+    margin: 0px auto;
+    min-width: 768px;
+    max-width: 768px;
+    border-bottom: 1px solid #cccccc;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc',endColorstr='#ffffff',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,1.0),0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,1.0),0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 0 0 0,0 1px 1px rgba(255,255,255,1.0);
+}
+.rgbanner .carousel-indicators .active {
+    background-color: #17afd8;
+}
+.rgbanner .carousel-indicators li {
+    cursor:pointer;
+    background-color: #c5c5c5;
+    width:7px;
+    height:7px;
+    margin-left:13px;
+}
+}
+@media screen and (max-width:768px){
+.rgcsbox {
+    height:194px;
+    margin:0 0 0 0;
+}
+.rgcs {
+    width:166px;
+    height:194px;
+}
+.rgbnul {
+    white-space:nowrap;
+}
+.rgbnli {
+    width:166px;
+    height:194px;
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+}
+.rgln {
+    height:auto;
+    padding-top:15px;
+}
+.rgln2 {
+    height:210px;
+    overflow:hidden;
+}
+.rgmn {
+    width:100%;
+    height:250px;
+    margin:6px 6px 0px 6px;
+}
+.rgrn_container {
+    padding:0px 6px 0px 0px;
+}
+.rgrn {
+    width:100%;
+    height:250px;
+    margin:6px 12px 6px 6px;
+}
+.rgfn_container {
+    width:285px;
+    margin:0px 0px 0px 15px;
+}
+.rgfn {
+    width:140px;
+    height:140px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.rgtitle {
+    line-height: 40px;
+    height: 50px;
+    padding-top: 20px;
+    margin:20px 0 10px 15px;
+}
+.rgfalls {
+}
+.rgbot {
+    margin-top:-230px;
+    z-index:1;
+    position:relative;
+}
+.rgmatch {
+    position:relative;
+    background-color:#17afd8;
+    padding-top:5px;
+    padding-left:5px;
+}
+.rgsearch {
+    position:absolute;
+    width:100%;
+    bottom:200px;
+}
+.rgsearchbtn {
+    margin-top:10px;
+    padding-right:0px;
+    text-align:right;
+}
+.rgbanner {
+    margin: 0px auto;
+    border-bottom: 1px solid #cccccc;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc',endColorstr='#ffffff',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,1.0),0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,1.0),0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 0 0 0,0 1px 1px rgba(255,255,255,1.0);
+}
+.rgbanner .carousel-indicators .active {
+    background-color: #17afd8;
+}
+.rgbanner .carousel-indicators li {
+    cursor:pointer;
+    background-color: #c5c5c5;
+    width:7px;
+    height:7px;
+    margin-left:13px;
+}
+}
+</style>
+<script type="text/javascript"> require(['jquery_lazyload','jquery_showLoading','least']); </script>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    $('.rgulleast').each(function(){
+            $(this).least({random:true,lazyload:false,scrollToGallery:false});
+       });
+    $('.carousel').carousel({
+            interval: 0,
+            wrap: false
+        })
+    offset = $('.rgbnli').first().width() * {{len(p_moai_bn)-1}} - $('#ridbn').width();
+    $('#search_s').focus();
+    $('#search_form').submit(function() { 
+        var search_s= $('#search_s').val();
+        if(search_s.length <= 0){
+            $('#search_msg').text('搜索内容不能为空');
+            return false;
+        }
+        var options = { 
+            url:'{{p_url["guest_home_main_search"]}}',
+            type:'POST', 
+            dataType: 'json',
+            success: function(data){
+                $('#search_submit').text('搜同款');
+                $('#search_submit').attr('disabled',false);
+                $('#search_s').attr('disabled',false);
+                $('#search_msg').text(data.msg);
+                location.hash = 'rnmatch';
+                if( data.op==true){
+                    $('#ridmatch').html(data.res);
+                }
+            },
+            error: function(){
+                $('#search_msg').text('{{p_msg["err_500"]}}');
+                $('#search_submit').text('搜同款');
+                $('#search_submit').attr('disabled',false);
+                $('#search_s').attr('disabled',false);
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#search_msg').text('');
+                $('#search_submit').text('正在搜索...');
+                $('#search_submit').attr('disabled',true);
+                $('#search_s').attr('disabled',true);
+            },
+        }; 
+        $('#search_form').ajaxSubmit(options); 
+        return false;
+    });
+});
+</script>
+<script type="text/javascript">
+var time = 2; 
+var step = 6; 
+var interval_left;
+var interval_right;
+var offset = 0;
+function start_mov_bn_left(){
+    clearInterval(interval_right);
+    interval_left = setInterval("mov_bn_left()",time);
+}
+function start_mov_bn_right(){
+    clearInterval(interval_left);
+    interval_right = setInterval("mov_bn_right()",time);
+}
+function stop_mov_bn_left(){
+    clearInterval(interval_left);
+}
+function stop_mov_bn_right(){
+    clearInterval(interval_right);
+}
+function mov_bn_left(){
+    pos_l = $('#ridbn').offset().left;
+    pos_l = pos_l+step;
+    $('#ridbn').offset({left:pos_l});
+    //console.log("("+offset+") left from : "+pos_l+" to "+(pos_l-step)+" = "+($('#ridbn').css('left')));
+    tmp = parseInt(($('#ridbn').css('left')).replace("px",""));
+    if(tmp>=0){
+        clearInterval(interval_left);
+    }
+}
+function mov_bn_right(){
+    pos_l = $('#ridbn').offset().left;
+    pos_l = pos_l-step;
+    $('#ridbn').offset({left:pos_l});
+    //console.log("("+offset+") right from : "+pos_l+" to "+(pos_l+step)+" = "+($('#ridbn').css('left')));
+    tmp = parseInt(($('#ridbn').css('left')).replace("px",""));
+    if(tmp<=-offset){
+        clearInterval(interval_right);
+        $('#ridbn').offset({left:-offset});
+    }
+}
+</script>
+<script type="text/javascript">
+var keyNext = "{{p_moai_fn_list[-1][0]['pf']}}";
+function More(){ 
+    $('#ridmore').hide();
+    $('#activity_pane').showLoading();
+    $.ajax({
+        url      : '{{p_url["guest_home_main_info"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appkey':keyNext,'appchannel':'WWW','client_info':'www'},
+        dataType : 'html',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        //if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                        //}else{
+                        //}
+                        setTimeout(function(){
+                            $('#ridmore').show();
+                            $('#activity_pane').hideLoading();
+                        }, 500);
+                   },
+        success  : function(result){
+                        setTimeout(function(){
+                            $('#ridfn').append( result );
+                            keyNext = $('#'+keyNext).attr('follow');
+                            if( keyNext != ''){
+                                $('#ridmore').show();
+                            }
+                            $('#activity_pane').hideLoading();
+                        }, 500);
+                    }
+    });
+}
+function ItemClick(appid,urlid,title){ 
+    var node_url = '/node'+'/'+appid+'/'+urlid
+    window.open(decodeURIComponent(node_url));
+    $.ajax({
+        url      : '{{p_url["api_click"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':appid,'urlid':urlid,'title':title,'appchannel':'WWW','client_info':'www'},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                        }else{
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                        }else{
+                        }
+                    }
+    });
+}
+function Search(){
+    $('#search_form').submit();
+}
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+
+<div id="ridwrap">
+    <div id="ridmain" class="clearfix">
+        <div class="rgimgbox" style="position:static;width:100%;height:100%;"><div class="rgimgbox_pos"><div>
+        <img src="/img/shimosheji/bn_aixiaochu.jpg" style="display:none;" onload="DrawImage(this)" />
+        </div></div></div>
+        <div class="rgsearch" >
+            <div class="rgbase row" >
+                <a name="rnmatch"></a>
+                <form id="search_form">
+                    <div class="col-xs-9 col-xs-offset-1 col-sm-6 col-sm-offset-2 col-lg-4 col-lg-offset-4" style="padding-right:0px;margin-right:0px;" >
+                        <input class="form-control rginput" type="text" id="search_s" name="s" placeholder="爱情公寓 、 火影忍者 、 美国队长 、 里约大冒险  ...">
+                    </div>
+                    <div class="col-xs-9 col-xs-offset-1 col-sm-2 col-ss-offset-0 col-lg-2 col-lg-offset-0 rgsearchbtn">
+                        <button id="search_submit" class="rgbtn-green" onclick='Search()'>搜同款</button>
+                    </div>
+                    <div class="col-xs-9 col-xs-offset-1 col-sm-6 col-sm-offset-2 col-lg-4 col-lg-offset-4" style="padding-right:0px;margin-right:0px;text-align:left;margin-top:10px;" >
+                        <label class="rglabel" id="search_msg" style="color:white"></label>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="ridbot">
+</div>
+
+<div class="rgbot">
+<div id="ridmatch">
+</div>
+{% for t_moai_index in range(0,len(p_moai_mn_list)) %}
+{% set t_moai_mn = p_moai_mn_list[t_moai_index] %}
+{% set t_responses_mn = p_responses_mn_list[t_moai_index] %}
+{% if t_moai_mn != None and len(t_moai_mn) >= 5 %}
+{% set t_appname_mn = t_moai_mn[0]['name'] %}
+{% set t_appid_mn = t_moai_mn[0]['appid'] %}
+<div class="rgbase" >
+    <ul class="list-inline rgtitle">
+        <li style="padding:0px 20px 0px 0px;"><h4 style="color:#464748;">{{t_appname_mn}}</h4></li>
+        <li style="padding:0px 0px 0px 0px;"><label style="color:#464748;"></label></li>
+    </ul>
+    <div class="row" style="margin:0px 0px 20px 0px;background-color:white;">
+        <div class="col-xs-12 col-sm-4 col-lg-3 rgln">
+            <div class="rgln2">
+                <span class="text-muted" style="line-height:40px;" >热门标签</span>
+                <ul class="list-inline">
+                {% set t_arr_index = [0,0,0,0] %}
+                {% set t_arr_replies = [ t_responses_mn[t_t]['replies'] for t_t in range(0,4) ] %}
+                {% set t_arr_moai = [ t_moai_mn[t_t] for t_t in range(1,5) ] %}
+                {% for t_response_index in range(0,15) %}
+                    {% set t_one_index = -1 %}
+                    {% for t_iter_index in range(0,4) %}
+                        {% if t_arr_index[t_iter_index] < len(t_arr_replies[t_iter_index]) %}
+                            {% if t_one_index < 0 %}
+                                {% set t_one_index = t_iter_index %}
+                            {% else %}
+                                {% if len(t_arr_replies[t_iter_index][t_arr_index[t_iter_index]]['like']) > len(t_arr_replies[t_one_index][t_arr_index[t_one_index]]['like']) %}
+                                    {% set t_one_index = t_iter_index %}
+                                {% else %}
+                                {% end %}
+                            {% end %}
+                        {% else %}
+                        {% end %}
+                    {% end %}
+                    {% if t_one_index >= 0 %}
+                        {% set t_text = t_arr_replies[t_one_index][t_arr_index[t_one_index]]['text'] %}
+                        {% set t_like_count = len(t_arr_replies[t_one_index][t_arr_index[t_one_index]]['like']) %}
+                        {% set t_urlid = t_arr_moai[t_one_index]['urlid'] %}
+                        {% set t_title = t_arr_moai[t_one_index]['title'] %}
+                        <li style="margin:3px 3px 3px 0px;padding:0px;"><button class="btn-primary rgbtn-blue" onclick="ItemClick('{{t_appid_mn}}','{{t_urlid}}','{{t_title}}')">{{t_text}} x {{t_like_count+1}}</button></li>
+                        {% set t_arr_index[t_one_index] = t_arr_index[t_one_index] + 1 %}
+                    {% end %}
+                {% end %}
+                </ul>
+            </div>
+        </div>
+        {% set t_moai_mn_1 = t_moai_mn[1] %}
+        {% set t_moai_mn_2 = t_moai_mn[2] %}
+        {% set t_moai_mn_3 = t_moai_mn[3] %}
+        {% set t_moai_mn_4 = t_moai_mn[4] %}
+        {% set t_responses_mn_1 = t_responses_mn[0] %}
+        {% set t_responses_mn_2 = t_responses_mn[1] %}
+        {% set t_responses_mn_3 = t_responses_mn[2] %}
+        {% set t_responses_mn_4 = t_responses_mn[3] %}
+        {% set t_urlid_mn_1 = t_moai_mn[1]['urlid'] %}
+        {% set t_urlid_mn_2 = t_moai_mn[2]['urlid'] %}
+        {% set t_urlid_mn_3 = t_moai_mn[3]['urlid'] %}
+        {% set t_urlid_mn_4 = t_moai_mn[4]['urlid'] %}
+        {% set t_title_mn_1 = t_moai_mn[1]['title'] %}
+        {% set t_title_mn_2 = t_moai_mn[2]['title'] %}
+        {% set t_title_mn_3 = t_moai_mn[3]['title'] %}
+        {% set t_title_mn_4 = t_moai_mn[4]['title'] %}
+        <div class="col-xs-6 col-sm-4 col-lg-3" style="padding:0px 0px 0px 0px;">
+            <div class="col-xs-12 col-sm-12 col-lg-12" style="padding:0px 6px 0px 0px;"><section><ul class="list-unstyled rgmn"><li style="width:100%;height:100%;">
+                <div class="rgimgbox" style="width:100%;height:100%;margin-bottom:5px;cursor:pointer;" onclick="ItemClick('{{t_appid_mn}}','{{t_urlid_mn_1}}','{{t_title_mn_1}}')"><div class="rgimgbox_pos"><div>
+                <img style="display:none;" src="{{t_moai_mn_1['item_imgs']['item_img'][0]['url']}}" onload="DrawImage(this)" />
+                <div class="infoLayer" style="width:100%;" >
+                    <div style="text-align:left;height:90px;background-color:black;">
+                    <ul>
+                        <li>
+                            <label>{{t_moai_mn_1['desc']}}</label>
+                            <span style="position:absolute;right:0px;">
+                                <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                <label>{{len(t_responses_mn_1['likes'])}}</label>
+                                <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                <label>{{len(t_responses_mn_1['replies'])}}</label>
+                            </span>
+                        </li>
+                        <li><label>{{t_title_mn_1}}</label></li>
+                    </ul>
+                    </div>
+                </div>
+                </div></div></div>
+            </li></ul></section>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-lg-12" style="padding:0px 6px 0px 0px;"><section><ul class="list-unstyled rgmn"><li style="width:100%;height:100%;">
+                <div class="rgimgbox" style="width:100%;height:100%;margin-bottom:5px;cursor:pointer;" onclick="ItemClick('{{t_appid_mn}}','{{t_urlid_mn_2}}','{{t_title_mn_2}}')"><div class="rgimgbox_pos"><div>
+                <img style="display:none;" src="{{t_moai_mn_2['item_imgs']['item_img'][0]['url']}}" onload="DrawImage(this)" />
+                <div class="infoLayer" style="width:100%;" >
+                    <div style="text-align:left;height:90px;background-color:black;">
+                    <ul>
+                        <li>
+                            <label>{{t_moai_mn_2['desc']}}</label>
+                            <span style="position:absolute;right:0px;">
+                                <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                <label>{{len(t_responses_mn_2['likes'])}}</label>
+                                <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                <label>{{len(t_responses_mn_2['replies'])}}</label>
+                            </span>
+                        </li>
+                        <li><label>{{t_title_mn_2}}</label></li>
+                    </ul>
+                    </div>
+                </div>
+                </div></div></div>
+            </li></ul></section>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-lg-6 rgrn_container">
+            <div class="col-xs-12 col-sm-12 col-lg-6" style="padding:0px 6px 0px 0px;"><section><ul class="list-unstyled rgrn"><li style="width:100%;height:100%;">
+                <div class="rgimgbox" style="width:100%;height:100%;margin-bottom:5px;cursor:pointer;" onclick="ItemClick('{{t_appid_mn}}','{{t_urlid_mn_3}}','{{t_title_mn_3}}')"><div class="rgimgbox_pos"><div>
+                <img style="display:none;" src="{{t_moai_mn_3['item_imgs']['item_img'][0]['url']}}" onload="DrawImage(this)" />
+                <div class="infoLayer" style="width:100%;" >
+                    <div style="text-align:left;height:90px;background-color:black;">
+                    <ul>
+                        <li>
+                            <label>{{t_moai_mn_3['desc']}}</label>
+                            <span style="position:absolute;right:0px;">
+                                <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                <label>{{len(t_responses_mn_3['likes'])}}</label>
+                                <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                <label>{{len(t_responses_mn_3['replies'])}}</label>
+                            </span>
+                        </li>
+                        <li><label>{{t_title_mn_3}}</label></li>
+                    </ul>
+                    </div>
+                </div>
+                </div></div></div>
+            </li></ul></section>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-lg-6" style="padding:0px 6px 0px 0px;"><section><ul class="list-unstyled rgrn"><li style="width:100%;height:100%;">
+                <div class="rgimgbox" style="width:100%;height:100%;margin-bottom:5px;cursor:pointer;" onclick="ItemClick('{{t_appid_mn}}','{{t_urlid_mn_4}}','{{t_title_mn_4}}')"><div class="rgimgbox_pos"><div>
+                <img style="display:none;" src="{{t_moai_mn_4['item_imgs']['item_img'][0]['url']}}" onload="DrawImage(this)" />
+                <div class="infoLayer" style="width:100%;" >
+                    <div style="text-align:left;height:90px;background-color:black;">
+                    <ul>
+                        <li>
+                            <label>{{t_moai_mn_4['desc']}}</label>
+                            <span style="position:absolute;right:0px;">
+                                <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                <label>{{len(t_responses_mn_4['likes'])}}</label>
+                                <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                <label>{{len(t_responses_mn_4['replies'])}}</label>
+                            </span>
+                        </li>
+                        <li><label>{{t_title_mn_4}}</label></li>
+                    </ul>
+                    </div>
+                </div>
+                </div></div></div>
+            </li></ul></section>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+{% end %}
+</div>
+
+<div class="rgbase rgfalls">
+    <ul class="list-inline rgtitle">
+        <li style="padding:0 10px 0 0;"   ><h4 style="color:#464748;">经典推荐</h4></li>
+        <li style="padding:0 10px 0 10px;"><h5 style="color:#464748;"></h5></li>
+    </ul>
+    <div style="position:relative;">
+        <div>
+        <section>
+            <ul id="ridfn" class="rgfn_container rgulleast" >
+                {% for t_index in range(1,len(p_moai_fn_list)) %}
+                {% set t_moai_fn = p_moai_fn_list[t_index] %}
+                {% set t_responses_fn = p_responses_fn_list[t_index] %}
+                {% set t_appid = t_moai_fn[0]['appid'] %}
+                {% set t_len = len(t_moai_fn) %}
+                    {% for t_i in range(1,t_len) %}
+                    {% set t_iid = t_moai_fn[t_i]['num_iid'] %}
+                    {% set t_desc = t_moai_fn[t_i]['desc'] %}
+                    {% set t_title = t_moai_fn[t_i]['title'] %}
+                    {% set t_price = t_moai_fn[t_i]['price'] %}
+                    {% set t_urlid = t_moai_fn[t_i]['urlid'] %}
+                    {% set t_si = t_moai_fn[t_i]['si'] %}
+                    {% set t_item_imgs = t_moai_fn[t_i]['item_imgs']['item_img'] %}
+                    {% set t_imgs = [ '\''+t_item_imgs[t_j]['url']+'\'' for t_j in t_si ] %}
+                    <li>
+                        <div class="rgimgbox rgfn" onclick="ItemClick('{{t_appid}}','{{t_urlid}}','{{t_title}}')"><div class="rgimgbox_pos"><div>
+                        {% if t_i < t_len %}
+                        <!-- img data-original="{{t_item_imgs[t_si[0]]['url']}}" src="/img/base/effects/black_rgpre.gif" onload="DrawImage(this)" / -->
+                        <img style="display:none;" src="{{t_item_imgs[t_si[0]]['url']}}" onload="DrawImage(this)" />
+
+                        <div class="infoLayer" style="width:100%;" >
+                            <div style="text-align:left;height:90px;background-color:black;">
+                            <ul>
+                                <li>
+                                    <label>{{t_desc}}</label>
+                                    <span style="position:absolute;right:0px;">
+                                        <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                        <label>{{len(t_responses_fn[t_i-1]['likes'])}}</label>
+                                        <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                        <label>{{len(t_responses_fn[t_i-1]['replies'])}}</label>
+                                    </span>
+                                </li>
+                                <li><label>{{t_title}}</label></li>
+                            </ul>
+                            </div>
+                        </div>
+                        {% end %}
+                        </div></div></div>
+                    </li>
+                    {% end %}
+                {% end %}
+            </ul>
+        </section>
+        </div>
+        <div id="ridmore" class="rgmore" onclick="More()">
+            <ul class="list-inline">
+                <li>
+                    <a href="javascript:void(0);" style="display:block;height:36px;text-decoration:none;">
+                    <img src="/img/shimosheji/down_1.png" style="width:36px;height:36px;"></img>
+                    </a>
+                </li>
+                <li><h5 style="">更多</h5></li>
+            </ul>
+        </div>
+        <div id="activity_pane" class="rgloading"></div>
+    </div>
+</div>
+<div class="rgbanner" >
+    <ul class="list-inline rgtitle">
+        <li style="padding:0 10px 0 0;"   ><h4 style="color:#464748;">紫色神装</h4></li>
+        <li style="padding:0 10px 0 10px;"><h5 style="color:#464748;"></h5></li>
+    </ul>
+    <div id="ridcs" class="carousel slide" data-ride="carousel">
+        <!-- Carousel items -->
+        <div class="carousel-inner row rgcsbox">
+            <div class="row" >
+                <section id="ridbn_container" style="text-align:center;">
+                    <ul id="ridbn" class="rgbnul">
+                        {% set t_appid = p_moai_bn[0]['appid'] %}
+                        {% for t_i in range(1,len(p_moai_bn)) %}
+                        {% set t_iid = p_moai_bn[t_i]['num_iid'] %}
+                        {% set t_desc = p_moai_bn[t_i]['desc'] %}
+                        {% set t_title = p_moai_bn[t_i]['title'] %}
+                        {% set t_price = p_moai_bn[t_i]['price'] %}
+                        {% set t_urlid = p_moai_bn[t_i]['urlid'] %}
+                        {% set t_si = p_moai_bn[t_i]['si'] %}
+                        {% set t_item_imgs = p_moai_bn[t_i]['item_imgs']['item_img'] %}
+                        {% set t_imgs = [ '\''+t_item_imgs[t_j]['url']+'\'' for t_j in t_si ] %}
+                        <li class="rgbnli">
+                            <div class="rgcs rgimgbox"><div class="rgimgbox_pos"><div>
+                            <img src="{{t_item_imgs[t_si[0]]['url']}}" style="display:none;" onload="DrawImage(this)" />
+                            <img src="/img/shimosheji/imgbox_bn_rounded.png" />
+                            <div class="infoLayer" style="width:100%;height:100%;cursor:pointer;" onclick="ItemClick('{{t_appid}}','{{t_urlid}}','{{t_title}}')">
+                                <img src="/img/shimosheji/imgbox_bn_infolayer.png" style="width:100%;height:100%;"/>
+                                <div style="text-align:left;padding: 0px 3px 0px 3px;height:89px;position:absolute;bottom:5px;opacity:1.0;">
+                                <ul style="height:100%;background-color:white;">
+                                    <li style="margin:0px 15px 0px 15px;height:25px;padding:0;color:#333333;"><h4 style="margin:0;">{{t_desc}}</h4></li>
+                                    <li style="margin:0px 15px 0px 15px;padding:0;color:#999999;height:40px;">
+                                        <label style="color:#999;white-space:normal;">{{t_title}}</label>
+                                    </li>
+                                </ul>
+                                </div>
+                            </div>
+                            </div></div></div>
+                        </li>
+                        {% end %}
+                    </ul>
+                </section>
+            </div>
+            <a class="left rgbnleft" href="#ridcs" onmouseover='start_mov_bn_left()' onmouseout='stop_mov_bn_left()' data-slide="prev">
+                <img src="/img/shimosheji/left_1.png" style="width:36px;height:36px;"></img>
+            </a>
+            <a class="right rgbnright" href="#ridcs" onmouseover='start_mov_bn_right()' onmouseout='stop_mov_bn_right()' data-slide="next">
+                <img src="/img/shimosheji/right_1.png" style="width:36px;height:36px;"></img>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

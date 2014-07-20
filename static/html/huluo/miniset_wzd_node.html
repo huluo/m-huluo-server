@@ -1,0 +1,614 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;带着地图去旅行</title>
+<link href="/css/base/least.min.css" rel="stylesheet" />
+<style type="text/css">
+html, body, #ridwrap {
+    height: 100%;
+}
+.rgfooter {
+    display:none;
+}
+.rgnav {
+    display:none;
+}
+@media screen and (min-width:1200px){
+.rgmain {
+    margin-top:20px;
+    padding:8px;
+}
+.rgmaincontainer {
+    padding:15px;
+    min-height:1105px;
+    background-color:white;
+    position:relative;
+}
+.rgmainimgcontainer {
+    width:100%;
+    height:500px;
+    background-color:#323232;
+    position:relative;
+}
+.rgmainimg {
+    width:500px;
+    height:500px;
+}
+.rgmaininfo {
+    position:absolute;
+    left:500px;
+    top:0px;
+    width:280px;
+    height:500px;
+    padding:20px;
+}
+.rglike {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+.rglikespan1:hover a.rglikeimgcontainer {
+    background:url(/img/shimosheji/like1.png);
+}
+.rglikespan2:hover a.rglikeimgcontainer {
+    background:url(/img/shimosheji/like2.png);
+}
+#ridlikespan:hover a.rglikeimgcontainer img {
+    visibility:hidden;
+}
+.rglikeloading {
+    width:30px;
+    height:30px;
+}
+.rgthumb_sel {
+    width:60px;
+    height:60px;
+    cursor:pointer;
+    border:1px solid #17afd8;
+}
+.rgthumb_unsel {
+    width:60px;
+    height:60px;
+    cursor:pointer;
+    border:1px solid #666666;
+}
+.rgthumb_unsel:hover {
+    border:1px solid #78bd16;
+}
+.rgbuyimg {
+    cursor:pointer;
+    position:absolute;
+    top:150px;
+    left:-25px;
+}
+.rgbuytext {
+    cursor:pointer;
+    position:absolute;
+    top:150px;
+    color:white;
+}
+.rgimgintopic {
+    width:354px;
+    height:190px;
+}
+.rgtextintopic {
+    width:354px;
+    white-space:normal;
+    cursor:text;
+    margin:10px 0px 20px 0px;
+}
+.rgimginbuddy {
+    width:175px;
+    height:160px;
+}
+.rgdesc {
+    color:#464748;
+    height:45px;
+    line-height:25px;
+    white-space:normal;
+    word-wrap:break-word;
+    word-break:break-all;
+}
+.rgreplyform {
+    width:496px;
+    padding:50px 10px 10px 10px;
+}
+}
+@media screen and (min-width:768px) and (max-width:1200px){
+.rgmain {
+    margin-top:20px;
+    padding:8px;
+}
+.rgmaincontainer {
+    padding:15px;
+    min-height:1025px;
+    background-color:white;
+    position:relative;
+}
+.rgmainimgcontainer {
+    width:100%;
+    height:620px;
+    background-color:#323232;
+    position:relative;
+}
+.rgmainimg {
+    width:466px;
+    height:400px;
+}
+.rgmaininfo {
+    position:absolute;
+    left:0px;
+    top:400px;
+    width:466px;
+    height:104px;
+    padding:20px;
+}
+.rglike {
+    position: absolute;
+    bottom: 5px;
+    right: 20px;
+}
+.rglikespan1:hover a.rglikeimgcontainer {
+    background:url(/img/shimosheji/like1.png);
+}
+.rglikespan2:hover a.rglikeimgcontainer {
+    background:url(/img/shimosheji/like2.png);
+}
+#ridlikespan:hover a.rglikeimgcontainer img {
+    visibility:hidden;
+}
+.rgthumb_sel {
+    width:60px;
+    height:60px;
+    cursor:pointer;
+    border:1px solid #17afd8;
+}
+.rgthumb_unsel {
+    width:60px;
+    height:60px;
+    cursor:pointer;
+    border:1px solid #666666;
+}
+.rgthumb_unsel:hover {
+    border:1px solid #78bd16;
+}
+.rgbuyimg {
+    cursor:pointer;
+    position:absolute;
+    top:110px;
+    left:-25px;
+}
+.rgbuytext {
+    cursor:pointer;
+    position:absolute;
+    top:110px;
+    color:white;
+}
+.rgimgintopic {
+    width:210px;
+    height:150px;
+}
+.rgtextintopic {
+    width:210px;
+    white-space:normal;
+    cursor:text;
+    margin:10px 0px 20px 0px;
+}
+.rgimginbuddy {
+    width:102px;
+    height:90px;
+}
+.rgdesc {
+    color:#464748;
+    height:32px;
+    line-height:25px;
+    white-space:normal;
+    word-wrap:break-word;
+    word-break:break-all;
+}
+.rgreplyform {
+    width:496px;
+    padding:50px 10px 10px 10px;
+}
+}
+@media screen and (max-width:768px){
+.rgmain {
+    margin-top:0px;
+    padding:8px;
+}
+.rgmaincontainer {
+    padding:15px;
+    min-height:925px;
+    background-color:white;
+    position:relative;
+}
+.rgmainimgcontainer {
+    width:100%;
+    height:480px;
+    background-color:#323232;
+    position:relative;
+}
+.rgmainimg {
+    width:274px;
+    height:274px;
+}
+.rgmaininfo {
+    position:absolute;
+    left:0px;
+    top:275px;
+    width:274px;
+    height:90px;
+    padding:20px;
+}
+.rglike {
+    position: absolute;
+    bottom: 5px;
+    right: 20px;
+}
+.rglikespan1:hover a.rglikeimgcontainer {
+    background:url(/img/shimosheji/like1.png);
+}
+.rglikespan2:hover a.rglikeimgcontainer {
+    background:url(/img/shimosheji/like2.png);
+}
+#ridlikespan:hover a.rglikeimgcontainer img {
+    visibility:hidden;
+}
+.rgthumb_sel {
+    width:47px;
+    height:47px;
+    cursor:pointer;
+    border:1px solid #17afd8;
+}
+.rgthumb_unsel {
+    width:47px;
+    height:47px;
+    cursor:pointer;
+    border:1px solid #666666;
+}
+.rgthumb_unsel:hover {
+    border:1px solid #78bd16;
+}
+.rgbuyimg {
+    cursor:pointer;
+    position:absolute;
+    top:90px;
+    left:-25px;
+}
+.rgbuytext {
+    cursor:pointer;
+    position:absolute;
+    top:90px;
+    color:white;
+}
+.rgimgintopic {
+    width:275px;
+    height:160px;
+}
+.rgtextintopic {
+    width:275px;
+    white-space:normal;
+    cursor:text;
+    margin:10px 0px 20px 0px;
+}
+.rgimginbuddy {
+    width:135px;
+    height:120px;
+}
+.rgdesc {
+    color:#464748;
+    height:32px;
+    line-height:25px;
+    white-space:normal;
+    word-wrap:break-word;
+    word-break:break-all;
+}
+.rgreplyform {
+    width:100%;
+    padding:50px 10px 10px 10px;
+}
+}
+</style>
+<script type="text/javascript"> require(['jquery_lazyload','least']); </script>
+<script type="text/javascript">
+function reloadReply() {
+    $.ajax({
+        url      : '{{p_url["miniset_wzd_guest_reply_info"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'nodeid':{{p_node['nodeid']}}},
+        dataType : 'html',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        $('#ridreplybox').html( '<h5>加载超时，点击刷新</h5>' )
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                        }else{
+                        }
+                   },
+        success  : function(result){
+                        $('#ridreplybox').html( result );
+                    }
+    });
+}
+require(['jquery','domReady!'], function(doc){
+    $('.rgulleast').each(function(){
+            $(this).least({random:true,lazyload:false,scrollToGallery:false});
+       });
+    reloadReply();
+    $('#replypost_form').submit(function() { 
+        var replypost_text= $('#replypost_text').val();
+        if(replypost_text.length <= 0 ){
+            $('#replypost_msg').text('内容不能为空');
+            return false;
+        }
+        if(replypost_text.length > 15 ){
+            $('#replypost_msg').text('标签不能超过15个字哟');
+            return false;
+        }
+        var options = {
+            url:'{{p_url["miniset_wzd_api_reply_post"]}}',
+            type:'POST',
+            dataType: 'json',
+            success: function(data){
+                if( data.op==true ){
+                    $('#replypost_submit').text('添加成功');
+                    reloadReply();
+                }else{
+                    $('#replypost_msg').text(data.msg);
+                }
+                $('#replypost_submit').text('添加标签');
+                $('#replypost_submit').attr('disabled',false);
+                $('#replypost_text').attr('disabled',false);
+                $('#replypost_text').val('');
+            },
+            error: function(){
+                $('#replypost_msg').text('{{p_msg["err_500"]}}');
+                $('#replypost_submit').text('添加标签');
+                $('#replypost_submit').attr('disabled',false);
+                $('#replypost_text').attr('disabled',false);
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#replypost_msg').text('');
+                $('#replypost_submit').text('发送中...');
+                $('#replypost_submit').attr('disabled',true);
+                $('#replypost_text').attr('disabled',true);
+            },
+        };
+        $('#replypost_form').ajaxSubmit(options);
+        return false;
+    });
+});
+function LikeClick(nodeid){ 
+    $('#ridlikespan').hide();
+    $('#ridlikemsg').show();
+    $.ajax({
+        url      : '{{p_url["miniset_wzd_api_like_post"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'nodeid':nodeid},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                        }else{
+                            alert('{{p_msg["err_500"]}}');
+                        }
+                        $('#ridlikemsg').hide();
+                        $('#ridvoteimg').hide();
+                        $('#ridvotetext').hide();
+                        $('#ridlikespan').show();
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            $('#ridliketext').text('x '+result.like_count );
+                            $('#ridlikeimg').attr('src','/img/shimosheji/like2.png');
+                            $('#ridlikespan').attr('onclick', '').unbind('click').click( function () { DislikeClick(nodeid); });
+                            $('#ridlikespan').removeClass().addClass("rglikespan2");
+                            $('#ridvoteimg').attr('src','/img/shimosheji/vote_2.png');
+                            $('#ridvotetext').attr('onclick', '').unbind('click').click( function () { DislikeClick(nodeid); });
+                        }else{
+                            alert('{{p_msg["err_500"]}}');
+                        }
+                        $('#ridlikemsg').hide();
+                        $('#ridvoteimg').show();
+                        $('#ridvotetext').show();
+                        $('#ridlikespan').show();
+                    }
+    });
+}
+function DislikeClick(nodeid){ 
+    $('#ridlikespan').hide();
+    $('#ridlikemsg').show();
+    $.ajax({
+        url      : '{{p_url["miniset_wzd_api_like_del"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'nodeid':nodeid},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                        }else{
+                            alert('{{p_msg["err_500"]}}');
+                        }
+                        $('#ridlikemsg').hide();
+                        $('#ridvoteimg').hide();
+                        $('#ridvotetext').hide();
+                        $('#ridlikespan').show();
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            $('#ridliketext').text('x '+result.like_count );
+                            $('#ridlikeimg').attr('src','/img/shimosheji/like1.png');
+                            $('#ridlikespan').attr('onclick', '').unbind('click').click( function () { LikeClick(nodeid); });
+                            $('#ridlikespan').removeClass().addClass("rglikespan1");
+                            $('#ridvoteimg').attr('src','/img/shimosheji/vote_1.png');
+                            $('#ridvotetext').attr('onclick', '').unbind('click').click( function () { LikeClick(nodeid); });
+                        }else{
+                            alert('{{p_msg["err_500"]}}');
+                        }
+                        $('#ridlikemsg').hide();
+                        $('#ridvoteimg').show();
+                        $('#ridvotetext').show();
+                        $('#ridlikespan').show();
+                    }
+    });
+}
+function BuddyClick(nodeid){ 
+    var node_url = '/weizhoudao'+'/'+nodeid
+    window.open(decodeURIComponent(node_url));
+}
+var last_index = 0;
+function ThumbClick(index,url){ 
+    if(last_index==index){
+        return;
+    }
+    var h = ''
+            + '<li style="padding-left:0px;">'
+            + '    <div class="rgimgbox rgmainimg"><div class="rgimgbox_pos"><div>'
+            + '    <img data-original="' + url + '" src="/img/base/effects/black_rgpre.gif" onload="DrawImage(this)" />'
+            + '    </div></div></div>'
+            + '</li>';
+    $('#ridimgview').html(h);
+    $('#ridimgview').least({random:false,lazyload:false,scrollToGallery:false});
+    $('#ridthumb'+last_index).removeClass("rgthumb_sel"); 
+    $('#ridthumb'+last_index).addClass("rgthumb_unsel"); 
+    $('#ridthumb'+index).removeClass("rgthumb_unsel"); 
+    $('#ridthumb'+index).addClass("rgthumb_sel"); 
+    last_index = index;
+}
+
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<div class="rgbase row">
+    <div class="col-xs-12 col-sm-8 col-lg-8 rgmain">
+        <div class="rgmaincontainer">
+            <div style="width:100%;">
+                {% set t_nodeid = p_node['nodeid'] %}
+                {% set t_title = p_node['title'] %}
+                {% set t_desc = p_node['desc'] %}
+                {% set t_imgs = p_node['imgs'] %}
+                <h3 style="color:#464748;margin-top:0px;">{{t_title}}</h2>
+                <label class="rgdesc">{{t_desc}}</label>
+            </div>
+            <div class="rgmainimgcontainer">
+                <section style="text-align:left;padding: 0px;">
+                <ul class="list-inline rgulleast" id="ridimgview">
+                    <li style="padding-left:0px;">
+                       <div class="rgimgbox rgmainimg"><div class="rgimgbox_pos"><div>
+                       <img data-original="{{t_imgs[0]['url']}}" src="/img/base/effects/black_rgpre.gif" onload="DrawImage(this)" />
+                       </div></div></div>
+                   </li>
+                </ul>
+                </section>
+                <div class="rgmaininfo">
+                    <!--
+                    <h5 style="color:#cccccc;position:absolute;top:50px;">评&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价 : </h5>
+                    <h5 style="color:#cccccc;position:absolute;top:80px;">成交记录 : </h5>
+                    -->
+
+                    {% if p_like['is_liked'] %}
+                    <img id="ridvoteimg" src="/img/shimosheji/vote_2.png" class="rgbuyimg" onclick="DislikeClick('{{t_nodeid}}')"></img>
+                    <div id="ridvotetext" class="rgbuytext" onclick="DislikeClick('{{t_nodeid}}')">
+                        <h4 style="margin:20px 0px 0px 30px;">投一票</h4>
+                    </div>
+                    {% else %}
+                    <img id="ridvoteimg" src="/img/shimosheji/vote_1.png" class="rgbuyimg" onclick="LikeClick('{{t_nodeid}}')"></img>
+                    <div id="ridvotetext" class="rgbuytext" onclick="LikeClick('{{t_nodeid}}')">
+                        <h4 style="margin:20px 0px 0px 30px;">投一票</h4>
+                    </div>
+                    {% end %}
+                    <ul class="list-inline" style="position:absolute;bottom:5px;">
+                    {% for t_i in range(0,len(t_imgs)) %}
+                        {% set t_url = t_imgs[t_i]['url'] %}
+                        <li style="padding:10px 10px 0px 0px;">
+                            {% if t_i == 0 %}
+                            <div id="ridthumb{{t_i}}" class="rgimgbox rgthumb_sel"><div class="rgimgbox_pos"><div>
+                            {% else %}
+                            <div id="ridthumb{{t_i}}" class="rgimgbox rgthumb_unsel"><div class="rgimgbox_pos"><div>
+                            {% end %}
+                            <img data-original="{{t_url}}" src="/img/base/effects/black_rgpre.gif" onload="DrawImage(this)" onclick="ThumbClick({{t_i}},'{{t_url}}')"/>
+                            </div></div></div>
+                        </li>
+                    {% end %}
+                    </ul>
+                </div>
+                <div class="rglike">
+                    {% if p_like['is_liked'] %}
+                    <span id="ridlikespan" class="rglikespan2" style="height:30px;cursor:pointer;display:inline-block;" onclick="DislikeClick('{{t_nodeid}}')">
+                        <a class="rglikeimgcontainer" href="javascript:void(0);" style="display:inline-block;width:22px;;height:20px;text-decoration:none;">
+                            <img id="ridlikeimg" style="width:22px;height:20px;" src="/img/shimosheji/like2.png"></img>
+                    {% else %}
+                    <span id="ridlikespan" class="rglikespan1" style="height:30px;cursor:pointer;display:inline-block;" onclick="LikeClick('{{t_nodeid}}')">
+                        <a class="rglikeimgcontainer" href="javascript:void(0);" style="display:inline-block;width:22px;;height:20px;text-decoration:none;">
+                            <img id="ridlikeimg" style="width:22px;height:20px;" src="/img/shimosheji/like1.png"></img>
+                    {% end %}
+                        </a>
+                        <a id="ridliketext" style="color:white;cursor:pointer;">x&nbsp;{{len(p_like['likes'])}}</a>
+                    </span>
+                    <span id="ridlikemsg" style="height:30px;color:white;display:none;margin-right:80px;">正在加载...</span>
+                </div>
+            </div>
+
+            <div style="width:100%;padding-left:0px;">
+                <h5>标签:</h5>
+                <div id="ridreplybox" class="row" style="width:100%;padding-left:15px;">
+                    <h5 class="text-muted">(加载中...)</h5>
+                </div>
+                <form id="replypost_form" class="container row rgreplyform">
+                    <input class="form-control rginput" type="text" id="replypost_text" name="text" placeholder="新建标签">
+                    <div><label class="rglabel text-danger" id="replypost_msg"></label></div>
+                    <input class="form-control rginput hidden" type="text" name="nodeid" value="{{p_node['nodeid']}}">
+                    <button type="submit" id="reply_submit" class="rgbtn-green">添加标签</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-lg-4 rgmain">
+        <div class="rgmaincontainer">
+            <div style="width:100%;padding-left:0px;height:20px;">
+            </div>
+            <hr>
+            <div style="width:100%;padding-left:0px;">
+                <h5>大家还喜欢</h5>
+                <section style="text-align:left;padding:0px;box-shadow:none;background-color:white;">
+                <ul class="list-inline rgulleast">
+                {% set t_nodes = p_miniset_wzd_info['nodes'] %}
+                {% set t_size = len(t_nodes) %}
+                {% set t_batch = 6 %}
+                {% if t_size > t_batch %}
+                    {% set t_size = t_batch %}
+                {% end %}
+                {% for t_i in range(0,t_size) %}
+                    {% set t_node = t_nodes[t_i] %}
+                    {% set t_nodeid = t_node['nodeid'] %}
+                    {% set t_title = t_node['title'] %}
+                    {% set t_desc = t_node['desc'] %}
+                    {% set t_imgs = t_node['imgs'] %}
+                    <li style="padding:0px;vertical-align:baseline;cursor:pointer;" onclick="BuddyClick('{{t_nodeid}}')">
+                        <div class="rgimgbox rgimginbuddy"><div class="rgimgbox_pos"><div>
+                        <img data-original="{{t_imgs[0]['url']}}" src="/img/base/effects/black_rgpre.gif" onload="DrawImage(this)" onclick=""/>
+                        </div></div></div>
+                    </li>
+                {% end %}
+                </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

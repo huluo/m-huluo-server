@@ -1,0 +1,242 @@
+{% extends "host_base.html" %}
+{% block head %}
+<title>石墨设计&middot;我的主页</title>
+<style type="text/css">
+.rgsubnav .active a {
+    background-color: #4d4e52;
+}
+.rgsubnav .active a:hover {
+    background-color: #4d4e52;
+}
+</style>
+<script type="text/javascript"> require(['md5']); </script>
+<script language="JavaScript">
+
+function emailok(){
+
+    $('#profile_email_input').val($.trim($('#profile_email_input').val()).toLowerCase());
+    $('#profile_email_input').val($('#profile_email_input').val().replace('﹫', '@'));
+    $('#profile_email_input').val($('#profile_email_input').val().replace('。', '.'));
+    var new_email= $('#profile_email_input').val();
+
+    if(new_email.length <= 0){
+            alert( '邮箱格式有误' );
+        return;
+     }
+
+    $('#profile_email_input').text( new_email );
+    $.ajax({
+        url      : '{{p_url["user_api_emailedit"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'new_email':new_email },
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(){
+                        alert('{{p_msg["err_timeout"]}}');
+                    },
+        success  : function(result){
+                        if( result.op==true){
+                            alert( result.msg );
+                        }else{
+                            alert( result.msg );
+                        }
+                    }
+    });
+}
+
+function pwdok(){
+    var old_pwd = $('#profile_old_pwd_input').val();
+    if(old_pwd.length < 6 || old_pwd.length > 20){
+        alert('请用6-20位字母或数字作为密码');
+        return false;
+    }
+    var new_pwd = $('#profile_new_pwd_input').val();
+    var verify_pwd = $('#profile_verify_pwd_input').val();
+    if(new_pwd.length < 6 || new_pwd.length > 20){
+        alert('请用6-20位字母或数字作为新密码');
+        return false;
+    }
+    if(new_pwd==old_pwd){
+       alert('新密码和旧密码不能相同');
+       $('#profile_old_pwd_input').val('');
+       $('#profile_new_pwd_input').val('');
+       $('#profile_verify_pwd_input').val('');
+       return false;
+    }
+
+    if(new_pwd!=verify_pwd){
+       alert('两次密码不相同');
+       $('#profile_old_pwd_input').val('');
+       $('#profile_new_pwd_input').val('');
+       $('#profile_verify_pwd_input').val('');
+       return false;
+    }
+    var old_s_pwd = hex_hmac_md5('{{p_pwsecret}}',old_pwd);
+    var new_s_pwd =hex_hmac_md5('{{p_pwsecret}}',new_pwd);
+
+    $.ajax({
+        url      : '{{p_url["user_api_pwdedit"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'new_pwd':new_s_pwd,'old_pwd':old_s_pwd},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(){
+                        alert('{{p_msg["err_timeout"]}}');
+                    },
+        success  : function(result){
+                        if( result.op==true){
+                            $('#profile_old_pwd_input').val('');
+                            $('#profile_new_pwd_input').val('');
+                            $('#profile_verify_pwd_input').val('');
+                            alert( result.msg );
+                        }else{
+                            alert( result.msg );
+                        }
+                    }
+    });
+}
+
+function phoneok(){
+    if(!checktelephone()){
+        alert( '电话号码格式有误' );
+        return;
+    }
+    var new_phone= $('#profile_phone_input').val();
+    if(new_phone.length <= 0 ){
+        alert( '电话号码格式有误' );
+        return;
+     }
+
+    $.ajax({
+        url      : '{{p_url["api_phoneedit"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'new_phone':new_phone },
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(){
+                        alert('{{p_msg["err_timeout"]}}');
+                    },
+        success  : function(result){
+                        if( result.op==true){
+                            alert( result.msg );
+                        }else{
+                            alert( result.msg );
+                        }
+                    }
+    });
+}
+
+
+
+function checktelephone() {
+    var phoneNum=$('#profile_phone_input').val()
+    var regPhone = /^([0-9]{11})?$/;
+    if(regPhone.test(phoneNum))
+    {
+        return true;
+    }
+    return false;
+}
+
+
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<div class="rgbase">
+    <ul class="nav nav-pills rgsubnav">
+        <li class=""><a class="muted" href="#"></a></li>
+        <li class="active"><a class="" href="#"></a></li>
+    </ul>
+    <div class="rgmain">
+        <div class="rgedit">
+            <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#pwdedit_collapse">+ 修改密码</a>
+            </div>
+            <div id="pwdedit_collapse" class="accordion-body collapse">
+                    <table >
+                    <tbody>
+                    <tr>
+                        <td class="muted rgurlkey"><h6>旧密码</h6></td>
+                        <td>
+                            <input type="password" style="display:inline;margin-top:10px;width:300px;"id="profile_old_pwd_input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="muted rgurlkey"><h6>新密码</h6></td>
+                        <td>
+                            <input type="password" style="display:inline;margin-top:10px;width:300px;"id="profile_new_pwd_input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="muted rgurlkey"><h6>重复新密码</h6></td>
+                        <td>
+                            <input type="password" style="display:inline;margin-top:10px;width:300px;"id="profile_verify_pwd_input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="javascript:void(0);" onclick="pwdok()" id="profile_pwd_ok">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>
+            <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#emailedit_collapse">+ 修改邮箱</a>
+            </div>
+            <div id="emailedit_collapse" class="accordion-body collapse">
+                    <table class="table-hover">
+                    <tbody>
+                    <tr>
+                        <td class="muted rgurlkey"><h6>新邮箱</h6></td>
+                        <td>
+                            <input type="text" value="{{p_email}}" style="display:inline;margin-top:10px;width:300px;" id="profile_email_input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="javascript:void(0);" onclick="emailok()" id="profile_email_ok">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    </table>
+            </div>
+            <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#phoneedit_collapse">+ 修改电话</a>
+            </div>
+            <div id="phoneedit_collapse" class="accordion-body collapse">
+                <table class="table-hover">
+                    <tbody>
+                    <tr>
+                        <td class="muted rgurlkey"><h6>手机号码</h6></td>
+                        <td>
+                            <input type="text" value="{{p_phone}}" style="display:inline;margin-top:10px;width:300px;"id="profile_phone_input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="javascript:void(0);" onclick="phoneok()" id="profile_phone_ok">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

@@ -1,0 +1,147 @@
+{% extends "host_base.html" %}
+{% block head %}
+<title>石墨设计&middot;我的主页</title>
+<style type="text/css">
+</style>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    reload();
+});
+function reload() { 
+    $('#adminbox').html( '<table class="table"><thead><tr><th style="width:120px">图片</th><th>标题</th><th>淘宝链接</th><th style="width:120px">描述</th><th style="width:80px">操作</th></tr></thead><tbody><tr><td class="rgcenter" colspan=5><h5>正在加载数据 ...</h5></td></tr></tbody>' )
+    $.ajax({
+        url      : '{{p_url["host_home_main_info"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':{{p_listnode['appid']}}},
+        dataType : 'html',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        $('#adminbox').html( '<table class="table"><thead><tr><th style="width:120px">图片</th><th>标题</th><th>淘宝链接</th><th style="width:120px">描述</th><th style="width:80px">操作</th></tr></thead><tbody><tr onclick="reload()"><td class="rgcenter" colspan=5><h5>加载超时，点击刷新</h5></td></tr></tbody>' )
+                   },
+        success  : function(result){
+                        $('#adminbox').html( result );
+                    }
+    });
+}
+function node_del_click(urlid,pic_url,title){
+    $('#urldel_modal').attr('urlid',urlid);
+    $('#urldel_pic').attr('src',pic_url);
+    $('#urldel_title').text( title );
+    $('#urldel_modal').modal('toggle');
+}
+function node_del_ok(){
+    $('#urldel_modal').modal('hide');
+    $.ajax({
+        url      : '{{p_url["api_home_main_del"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':{{p_listnode['appid']}},'urlid':$('#urldel_modal').attr('urlid')},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+function node_del_cancel(){
+    $('#urldel_modal').modal('hide');
+}
+function node_sort_click(urlid,goingdown){
+    p = {};
+    if( goingdown ){
+        p = {'_xsrf':getCookie('_xsrf'),'appid':{{p_listnode['appid']}},'urlid':urlid,'goingdown':goingdown};
+    } else {
+        p = {'_xsrf':getCookie('_xsrf'),'appid':{{p_listnode['appid']}},'urlid':urlid};
+    }
+    $.ajax({
+        url      : '{{p_url["api_home_main_sort"]}}',
+        type     : 'POST',
+        data     : p,
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<!-- Modal -->
+<div id="urldel_modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-muted">删除此链接？</h4>
+            </div>
+            <div class="modal-body">
+                <div class="thumbnails">
+                    <div class="offset1 span3 thumbnail">
+                        <img id="urldel_pic" class="img-rounded" style="height:200px;">
+                        <div class="caption">
+                            <h6 class="text-muted">标题</h6>
+                            <p id="urldel_title"></p>
+                        </div>
+                    </div>
+                </div>
+                <p><br>链接删除后,该商品将不再展示在客户端或者web页上，是否删除？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="rgbtn btn btn-primary" onclick="node_del_ok()" >删除</button>
+                <button type="button" class="btn btn-link" data-dismiss="modal" onclick="node_del_cancel()" >取消</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="rgbase">
+    <ul class="nav nav-pills rgsubnav">
+        <li class="active"><a>列表管理</a></li>
+    </ul>
+    <div class="rgmain">
+        <ul class="breadcrumb">
+            <li><a href="{{p_url['host_home_list_admin']}}">全部列表</a></li>
+            <li class="active">{{p_listnode['name']}}</li>
+        </ul>
+        <div id="adminbox" class="table-responsive">
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

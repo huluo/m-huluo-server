@@ -1,0 +1,333 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;带着地图去旅行</title>
+<link href="/css/base/least.min.css" rel="stylesheet" />
+<link href="/css/base/showLoading.css" rel="stylesheet" media="screen">
+<style type="text/css">
+html, body, #ridwrap {
+    height: 100%;
+}
+body > #ridwrap {
+    height: auto;
+    min-height: 100%;
+    background-repeat:no-repeat;
+    background-position:bottom center;
+    background-color:#ffffff;
+}
+.rgfooter {
+    display:none;
+}
+.rgnav {
+    display:none;
+}
+#ridmain {
+    text-align:center;
+    padding-bottom: 200px;
+} /* 必须使用和ridbot相同的高度 */ 
+#ridbot {
+    position: relative; 
+    background-color:#333333;
+    margin-top: -100px; /* ridbot高度的负值 */ 
+    height: 800px;
+    clear:both;
+    -webkit-transition: opacity 0.01s linear;
+    -moz-transition: opacity 0.01s linear;
+    -ms-transition: opacity 0.01s linear;
+    -o-transition: opacity 0.01s linear;
+    transition: opacity 0.01s linear;
+    opacity: 0.0;
+}
+.clearfix:after {
+    ridcon: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}
+
+.rglink {
+    background-color:#78bd16;
+    margin:0px 10px 5px 2px;
+    color:white;
+    width:150px;
+    height:45px;
+    line-height:45px;
+    cursor:pointer;
+}
+
+.rgbackhome {
+    display:none;
+}
+.carousel {
+    margin-bottom: 0;
+}
+.rgulleast {
+    margin:0 0 0 0;
+}
+section {
+    background-color:transparent;
+    text-align:left;
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+    box-shadow:0 0 0 0;
+}
+section li .infoLayer div {
+    margin: 0 0 0 0;
+    height:100%;
+    -webkit-transition: opacity 0.01s linear;
+    -moz-transition: opacity 0.01s linear;
+    -ms-transition: opacity 0.01s linear;
+    -o-transition: opacity 0.01s linear;
+    transition: opacity 0.01s linear;
+    opacity: 0.8;
+}
+section li .infoLayer ul {
+    padding: 13px 0 0 0;
+}
+section li .overLayer, section li .infoLayer {
+    top:auto;
+    bottom:0px;
+    height:90px;
+    -webkit-transition: opacity 0.01s linear;
+    -moz-transition: opacity 0.01s linear;
+    -ms-transition: opacity 0.01s linear;
+    -o-transition: opacity 0.01s linear;
+    transition: opacity 0.01s linear;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li:first-child {
+    width:auto;
+    margin:0px 13px 0px 13px;
+    border-bottom:0px solid;
+    height:25px;
+    padding:0;
+    border-bottom: 0px white solid;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li:first-child label {
+    color:white;
+    font-size:14px;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li {
+    width:auto;
+    margin:0px 13px 0px 13px;
+    padding:0;
+    height:40px;
+}
+section li .overLayer ul li:first-child, section li .infoLayer ul li label {
+    color:#cccccc;
+    font-size:12px;
+}
+
+
+@media screen and (min-width:1200px){
+.rgcsbox {
+    min-width: 1200px;
+    max-width: 1200px;
+    height:484px;
+    margin:0 0 0 0;
+}
+.rgcs {
+    width:284px;
+    height:484px;
+}
+.rgfn_container {
+    margin:0px 0px 0px 0px;
+}
+.rgfn {
+    width:235px;
+    height:200px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.rgtitle {
+    line-height: 40px;
+    height: 40px;
+    padding-top: 10px;
+    margin:20px 0 10px 0;
+}
+.rgfalls {
+}
+.rgbot {
+    margin-top:-800px;
+    z-index:1;
+    position:relative;
+}
+}
+@media screen and (min-width:768px) and (max-width:1200px){
+.rgcsbox {
+    min-width: 768px;
+    max-width: 768px;
+    height:384px;
+    margin:0 0 0 0;
+}
+.rgcs {
+    width:225px;
+    height:384px;
+}
+.rgfn_container {
+    margin:0px 0px 0px 0px;
+}
+.rgfn {
+    width:250px;
+    height:230px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.rgtitle {
+    line-height: 40px;
+    height: 50px;
+    padding-top: 20px;
+    margin:20px 0 10px 0;
+}
+.rgfalls {
+}
+.rgbot {
+    margin-top:-200px;
+    z-index:1;
+    position:relative;
+}
+}
+@media screen and (max-width:768px){
+.rgcsbox {
+    height:194px;
+    margin:0 0 0 0;
+}
+.rgcs {
+    width:166px;
+    height:194px;
+}
+.rgfn_container {
+    width:285px;
+    margin:0px 0px 0px 15px;
+}
+.rgfn {
+    width:140px;
+    height:140px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.rgtitle {
+    line-height: 40px;
+    height: 50px;
+    padding-top: 20px;
+    margin:20px 0 10px 15px;
+}
+.rgfalls {
+}
+.rgbot {
+    margin-top:-230px;
+    z-index:1;
+    position:relative;
+}
+}
+</style>
+<script type="text/javascript"> require(['jquery_lazyload','jquery_showLoading','least']); </script>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    $('.rgulleast').each(function(){
+            $(this).least({random:true,lazyload:false,scrollToGallery:false});
+       });
+});
+</script>
+<script type="text/javascript">
+function ItemClick(nodeid,title){ 
+    var node_url = '/weizhoudao'+'/'+nodeid
+    window.open(decodeURIComponent(node_url));
+}
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+
+<div id="ridwrap">
+    <div id="ridmain" class="clearfix">
+        <div class="rgimgbox" style="position:static;width:100%;height:100%;"><div class="rgimgbox_pos"><div>
+        <img src="/img/shimosheji/miniset/wzd_bn.jpg" style="display:none;" onload="DrawImage(this)" />
+        </div></div></div>
+       <div style="position:absolute;width:100%;bottom:100px;" >
+            <div class="rgbase" style="background-color:yellow;text-align:right;" >
+                <ul class="pull-right list-unstyled" style="text-align:center;" >
+                    <li class="rglink" style="width:150px;" ><a style="color:white" href="http://www.cnwzd.com">活动详情</a></li>
+                    <li class="rglink" style="width:150px;" ><a style="color:white" href="http://www.cnwzd.com">涠洲岛网</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ridbot">
+</div>
+
+<div class="rgbot">
+</div>
+
+<div class="rgbase rgfalls">
+    <ul class="list-inline rgtitle">
+        <li style="padding:0 10px 0 0;"   ><h4 style="color:#464748;">经典推荐</h4></li>
+        <li style="padding:0 10px 0 10px;"><h5 style="color:#464748;"></h5></li>
+    </ul>
+    <div style="position:relative;">
+        <div>
+        <section>
+            <ul id="ridfn" class="rgfn_container rgulleast" >
+                {% set t_nodes = p_miniset_wzd_info['nodes'] %}
+                {% for t_index in range(0,len(t_nodes)) %}
+                {% set t_node = t_nodes[t_index] %}
+                {% set t_response = p_miniset_wzd_responses[t_index] %}
+                {% set t_nodeid = t_node['nodeid'] %}
+                {% set t_title = t_node['title'] %}
+                {% set t_desc = t_node['desc'] %}
+                {% set t_imgs = t_node['imgs'] %}
+                <li>
+                    <div class="rgimgbox rgfn" onclick="ItemClick('{{t_nodeid}}','{{t_title}}')"><div class="rgimgbox_pos"><div>
+                    <!-- img data-original="{{t_imgs[0]['url']}}" src="/img/base/effects/black_rgpre.gif" onload="DrawImage(this)" / -->
+                    <img style="display:none;" src="{{t_imgs[0]['url']}}" onload="DrawImage(this)" />
+
+                    <div class="infoLayer" style="width:100%;" >
+                        <div style="text-align:left;height:90px;background-color:black;">
+                        <ul>
+                            <li>
+                                <label>{{t_title}}</label>
+                                <span style="position:absolute;right:0px;">
+                                    <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                                    <label>{{len(t_response['likes'])}}</label>
+                                    <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                                    <label>{{len(t_response['replies'])}}</label>
+                                </span>
+                            </li>
+                            <li><label>{{t_desc}}</label></li>
+                        </ul>
+                        </div>
+                    </div>
+                    </div></div></div>
+                </li>
+                {% end %}
+            </ul>
+        </section>
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

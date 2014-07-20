@@ -1,0 +1,135 @@
+<table class="table">
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#list_add_form').submit(function() { 
+        $('#list_add_submit_msg').text('');
+
+        var list_add_name = $('#list_add_name').val();
+
+        if(list_add_name.length <= 0){
+            $('#list_add_submit_msg').text('列表名不能为空');
+            return false;
+        }
+        if(list_add_name.length > 20){
+            $('#list_add_name_msg').text('列表名过长,请控制在20个字符以内');
+            return false;
+        }
+        var options = { 
+            url:'{{p_url["api_home_list_add"]}}',
+            type:'POST', 
+            dataType: 'json',
+            success: function(data){
+                $('#list_add_submit_msg').text(data.msg);
+                if( data.op==true){
+                    $('#list_add_submit').text('创建成功');
+                    reload();
+                }else{
+                    $('#list_add_submit').text('创建');
+                    $('#list_add_submit').attr('disabled',false);
+                    $('#list_add_name').attr('disabled',false);
+                }
+            },
+            error: function(){
+                $('#list_add_submit').text('创建');
+                $('#list_add_submit_msg').text('p_msg["err_500"]');
+                $('#list_add_submit').attr('disabled',false);
+                $('#list_add_name').attr('disabled',false);
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#list_add_submit').text('正在创建...');
+                $('#list_add_submit_msg').text('正在创建...');
+                $('#list_add_submit').attr('disabled',true);
+                $('#list_add_name').attr('disabled',true);
+            },
+        };
+        $('#list_add_form').ajaxSubmit(options); 
+        return false;
+    });
+});
+function hide_list_add(){
+    $('#list_add_collapse').collapse('hide');
+}
+</script>
+<thead>
+    <tr>
+        <th>列表名</th>
+        <th>添加时间</th>
+        <th>个数</th>
+        <th class="text-right">浏览 - 点击 - 跳转&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th class="text-right">操作</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td colspan=7>
+            <div class="accordion-group">
+                <div class="accordion-heading text-center">
+                    <a class="accordion-toggle rglink" data-toggle="collapse" data-parent="#accordion2" href="#list_add_collapse"> + 添加新列表 </a>
+                </div>
+                <div id="list_add_collapse" class="row accordion-body collapse">
+                    <form id="list_add_form" class="col-lg-4 col-lg-offset-4">
+                        {% raw xsrf_form_html() %}
+                        <div class="form-group">
+                            <label for="list_add_name">列表名</label>
+                            <input type="text" class="form-control" id="list_add_name" name="list_name" placeholder="20个字符以内">
+                            <label class="text-danger" id="list_add_submit_msg"></label>
+                        </div>
+                        <div class="pull-left" style="margin-bottom:30px;">
+                            <button type="submit" id="list_add_submit" class="rgbtn btn btn-primary">创建</button>
+                            <button type="button" class="btn btn-link rglink" onclick="hide_list_add()" >取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% if p_appstats_dict != None  %}
+    {% for i in p_session['listinfo']['kl']%}
+    {% set one = p_appstats_dict[i] %}
+    {% set t_appkey = one['appkey'] %}
+    {% set t_appid =  one['appid'] %}
+    {% set t_name =   one['name'] %}
+    {% set t_atime =  one['atime'] %}
+    {% set t_links =  one['links'] %}
+    <tr>
+        <td>
+            <span id="rid_list_{{t_appid}}_name">
+            <b id="rid_list_{{t_appid}}_name_text">{{t_name}}</b>
+            <a class="rglink" href="javascript:void(0)" onclick="list_name_click({{t_appid}})">&nbsp;[修改]</a>
+            {% if p_isAdmin %}
+                {% if t_appkey!=p_initAppkey%}
+                <a class="rglink" href="javascript:void(0)" onclick="make_list_entry({{t_appid}},'{{t_appkey}}')">[设为入口]</a>
+                {% else %}
+                <a class="rglink" href="javascript:void(0)" style="color:red;">(当前入口)</a>
+                {% end %}
+            {% end %}
+            </span>
+            <h6 id="rid_list_{{t_appid}}_id" class="text-muted">appkey: {{t_appkey}}</h6>
+            <textarea id="rid_list_{{t_appid}}_name_edit" style="width:100%;height:40px;display:none;"></textarea>
+            <ul class="list-inline" id="rid_list_{{t_appid}}_name_op" style="display:none;">
+                <li><button class="rgbtn" style="width:80px;height:30px;" onclick="list_name_ok({{t_appid}})">修改</button></li>
+                <li><button class="rgbtn" style="width:80px;height:30px;" onclick="list_name_cancel({{t_appid}})">取消</button></li>
+            </ul>
+        </td>
+        <td>{{t_atime}}</td>
+        <td>{{len(t_links)}}</td>
+        <td class="text-right">
+            <span>{{one['st_v']}}&nbsp;-&nbsp;{{one['st_c']}}&nbsp;-&nbsp;{{one['st_l']}}</span>
+            <a class="rglink" href="{{p_url['host_home_list_stat']+'?appid='+str(one['appid'])}}" >[详细]</a>
+        </td>
+        <td class="text-right">
+            <div><a class="rglink" href="{{p_url['host_home_main_admin']+'?appid='+str(t_appid)}}">管理</a><img src="/img/shimosheji/up.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="list_sort_click('{{t_appkey}}',false)"></div>
+            <!-- <div><a class="rglink" href="javascript:void(0)" onclick="list_rebuild_click({{t_appid}},'{{t_appkey}}')">重建</a></div> -->
+            <div style="height:10px"></div>
+            {% if t_appkey!=p_initAppkey%}
+            <div><a class="rglink" href="javascript:void(0)" onclick="list_del_click({{t_appid}},'{{t_appkey}}','{{t_name}}')">删除</a><img src="/img/shimosheji/down.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="list_sort_click('{{t_appkey}}',true)"></div>
+            {% else %}
+            <div><a class="rglink" href="javascript:void(0)" style="color:red;">锁定</a><img src="/img/shimosheji/down.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="list_sort_click('{{t_appkey}}',true)"></div>
+            {% end %}
+        </td>
+    </tr>
+    {% end %}
+    {% end %}
+    <tr> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+</tbody>
+</table>

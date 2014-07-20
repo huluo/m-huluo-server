@@ -1,0 +1,18 @@
+<xml>
+<ToUserName><![CDATA[{{p_toUser}}]]></ToUserName>
+<FromUserName><![CDATA[{{p_fromUser}}]]></FromUserName>
+<CreateTime>{{p_createTime}}</CreateTime>
+<MsgType><![CDATA[news]]></MsgType>
+<ArticleCount>{{len(p_items)}}</ArticleCount>
+<Articles>
+{% for t_index in range(0,len(p_items)) %}
+{% set t_item = p_items[t_index] %}
+<item>
+<Title><![CDATA[{{t_item['title']}}]]></Title>
+<Description><![CDATA[{{t_item['description']}}]]></Description>
+<PicUrl><![CDATA[{{t_item['picurl']}}]]></PicUrl>
+<Url><![CDATA[{{t_item['url']}}]]></Url>
+</item>
+{% end %}
+</Articles>
+</xml>

@@ -1,0 +1,90 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;影视剧搜同款</title>
+<style type="text/css">
+html, body, #ridwrap {
+    height: 100%;
+}
+body > #ridwrap {
+    height: auto;
+    min-height: 100%;
+    background-image:url('/img/shimosheji/emotion_bg.png');
+    background-repeat:no-repeat;
+    background-position:bottom center;
+    background-color:#ffffff;
+}
+#ridmain {
+    padding-bottom: 5px;
+} /* 必须使用和ridbot相同的高度 */ 
+#ridbot {
+    position: relative; 
+    background-color:#333333;
+    margin-top: -5px; /* ridbot高度的负值 */ 
+    height: 5px;
+    clear:both;
+}
+.clearfix:after {
+    ridcon: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}
+.rgplay {
+    margin: 0px auto ;
+    min-width: 1000px;
+    max-width: 1000px;
+}
+/* End hide from IE-mac */
+
+</style>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+});
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<div id="ridwrap">
+    <div id="ridmain row" class="clearfix rgplay">
+        <div class="col-xs-6 col-sm-6 col-lg-6" style="margin-top:100px;" >
+            <embed src="http://player.youku.com/player.php/sid/XNjI0NjY1Mjcy/v.swf" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash">
+            </embed>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-lg-6" style="margin-top:100px;" >
+            <label><b>北京石座科技有限公司 旗下品牌</b></label>
+            <p class="text-muted">石墨设计不停歇为你带来游戏、动漫、电影主题精美玩具、上古神器和神秘故事。</p>
+            <br>
+            <div><label style="cursor:text">请联系我们</label></div>
+            <div><label style="cursor:text">不论您想了解我们、商务合作、还是参与我们构建影视剧搜同款世界！</label></div>
+            <div><label style="cursor:text">邮箱: hello@rongoman.com</label></div>
+            <div><label style="cursor:text">电话: 010-65447156</label></div>
+            <div><label style="cursor:text">联系人: 叶先生 15801208687</label></div>
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

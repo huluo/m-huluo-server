@@ -1,0 +1,78 @@
+<div>
+<script type="text/javascript">
+function ReplyPraise(nodeid,rplid){ 
+    $.ajax({
+        url      : '{{p_url["miniset_wzd_api_reply_praise"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'nodeid':nodeid,'rplid':rplid},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reloadReply();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reloadReply();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   }
+    });
+};
+function ReplyDel(nodeid,rplid){ 
+    $.ajax({
+        url      : '{{p_url["miniset_wzd_api_reply_del"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'nodeid':nodeid,'rplid':rplid},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reloadReply();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reloadReply();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   }
+    });
+};
+</script>
+{% if len(p_replies) > 0 %}
+    {% for t_reply in p_replies %}
+    {% set t_nodeid = t_reply['nodeid'] %}
+    {% set t_rplid = t_reply['rplid'] %}
+    {% set t_text = t_reply['text'] %}
+    {% set t_is_liked = t_reply['is_liked'] %}
+    {% set t_is_owner = t_reply['is_owner'] %}
+    {% set t_like_count = len(t_reply['like']) %}
+    <div>
+        <label style="line-height:30px;padding:0px 10px 0px 10px;background:#17afd8;color:#ffffff">{{t_text}}</label>
+        <label style="line-height:30px;padding:0px 10px 0px 10px;">x {{t_like_count}}</label>
+        {% if t_is_owner %}
+            <a href="javascript:void(0)" onclick="ReplyDel({{t_nodeid}},{{t_rplid}})" style="line-height:30px;padding:0px 10px 0px 0px;color:#2a6496;cursor:pointer;">删除</a>
+        {% else %}
+            {% if t_is_liked %}
+            <label class="text-muted" style="line-height:30px;padding:0px 10px 0px 0px;">已顶过</label>
+            {% else %}
+            <a href="javascript:void(0)" onclick="ReplyPraise({{t_nodeid}},{{t_rplid}})" style="line-height:30px;padding:0px 10px 0px 0px;color:#2a6496;cursor:pointer;">顶</a>
+            {% end %}
+            {% if p_isAdmin %}
+                <a href="javascript:void(0)" onclick="ReplyDel({{t_nodeid}},{{t_rplid}})" style="line-height:30px;padding:0px 10px 0px 0px;color:#2a6496;cursor:pointer;">超级删除</a>
+            {% end %}
+        {% end %}
+    </div>
+    {% end %}
+{% else %}
+    <h5 class="text-muted">(暂无标签，抢先贴一个)</h5>
+{% end %}
+</div>

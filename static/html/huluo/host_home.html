@@ -1,0 +1,302 @@
+{% extends "host_base.html" %}
+{% block head %}
+<title>石墨设计&middot;影视剧搜同款</title>
+<style type="text/css">
+@media screen and (min-width:1200px){
+}
+@media screen and (min-width:768px) and (max-width:1200px){
+}
+@media screen and (max-width:768px){
+}
+.rgnav {
+    display: none;
+}
+.rgindex {
+    background-color: #ffffff;
+}
+.rgopbar {
+    background-color: #4d4e52;
+}
+</style>
+<script type="text/javascript"> require(['md5']); </script>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    if('{{p_email}}'!='None'){
+        $('#signin_email').val('{{p_email}}');
+    }
+    if('{{p_passwd}}'!='None'){
+        $('#signin_passwd').val('{{p_passwd}}');
+    }
+    $('#signup_btn').click(function() { 
+        $('#signup_email').attr('disabled',false);
+        $('#signup_passwd').attr('disabled',false);
+        $('#signup_passwd2').attr('disabled',false);
+        $('#signup_submit').attr('disabled',false);
+        $('#signup_submit').text('注册');
+        $('#signup_email').val('');
+        $('#signup_passwd').val('');
+        $('#signup_passwd2').val('');
+        $('#signup_form').css('display','block');
+        $('#signin_form').css('display','none');
+    });
+    $('#signin_btn').click(function() { 
+        $('#signin_form').css('display','block');
+        $('#signup_form').css('display','none');
+    });
+    $('#signin_form').submit(function() { 
+        $('#signin_email').val($.trim($('#signin_email').val()).toLowerCase());
+        $('#signin_email').val($('#signin_email').val().replace('﹫', '@'));
+        $('#signin_email').val($('#signin_email').val().replace('。', '.'));
+        var signin_email= $('#signin_email').val();
+        var signin_passwd = $('#signin_passwd').val();
+        if(signin_email.length <= 0 || signin_passwd.length <=0){
+            $('#signin_msg').text('邮箱和密码不能为空');
+            return false;
+        }
+        var emailPat =  /^([a-zA-Z0-9_-]|\.)+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+        var matchArray = signin_email.match(emailPat);
+        if(matchArray==null){
+            $('#signin_msg').text('邮箱格式有误');
+            return false;
+        }
+        var signin_s_passwd = hex_hmac_md5('{{p_pwsecret}}',signin_passwd);
+        $('#signin_s_passwd').attr('value',signin_s_passwd);
+        var options = { 
+            url:'{{p_url["api_signin"]}}',
+            type:'POST', 
+            dataType: 'json',
+            success: function(data){
+                if( data.op==true){
+                    $('#signin_submit').text('登录成功');
+                    var next='{{p_next}}';
+                    if( next=='None' ){
+                        next='{{p_url["host_home"]}}';
+                    }
+                    location.href = decodeURIComponent(next);
+                }else{
+                    $('#signin_msg').text(data.msg);
+                    $('#signin_submit').text('登 录');
+                    $('#signin_submit').attr('disabled',false);
+                    $('#signin_email').attr('disabled',false);
+                    $('#signin_passwd').attr('disabled',false);
+                    $('#signin_passwd2').attr('disabled',false);
+                }
+            },
+            error: function(){
+                $('#signin_msg').text('{{p_msg["err_500"]}}');
+                $('#signin_submit').text('登 录');
+                $('#signin_submit').attr('disabled',false);
+                $('#signin_email').attr('disabled',false);
+                $('#signin_passwd').attr('disabled',false);
+                $('#signin_passwd2').attr('disabled',false);
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#signin_msg').text('');
+                $('#signin_submit').text('正在登录...');
+                $('#signin_submit').attr('disabled',true);
+                $('#signin_email').attr('disabled',true);
+                $('#signin_passwd').attr('disabled',true);
+                $('#signin_passwd2').attr('disabled',true);
+            },
+        }; 
+        $('#signin_form').ajaxSubmit(options); 
+        return false;
+    });
+    $('#signup_form').submit(function() { 
+        $('#signup_email').val($.trim($('#signup_email').val()).toLowerCase());
+        $('#signup_email').val($('#signup_email').val().replace('﹫', '@'));
+        $('#signup_email').val($('#signup_email').val().replace('。', '.'));
+        var signup_email= $('#signup_email').val();
+        var signup_passwd = $('#signup_passwd').val();
+        var signup_passwd2 = $('#signup_passwd2').val();
+        if(signup_email.length <= 0){
+            $('#signup_msg').text('邮箱不能为空');
+            return false;
+        }
+        var emailPat =  /^([a-zA-Z0-9_-]|\.)+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+        var matchArray = signup_email.match(emailPat);
+        if(matchArray==null){
+            $('#signup_msg').text('邮箱格式有误');
+            return false;
+        }
+        if(signup_passwd.length < 6 || signup_passwd.length > 20){
+            $('#signup_msg').text('请用6-20位字母或数字作为密码');
+            return false;
+        }
+        if(signup_passwd!=signup_passwd2){
+            $('#signup_msg').text('两次密码不相同');
+            return false;
+        }
+        var signup_s_passwd = hex_hmac_md5('{{p_pwsecret}}',signup_passwd);
+        $('#signup_s_passwd').attr('value',signup_s_passwd);
+        var options = { 
+            url:'{{p_url["user_api_signup"]}}',
+            type:'POST', 
+            dataType: 'json',
+            success: function(data){
+                $('#signup_msg').text(data.msg);
+                if( data.op==true){
+                    $('#signup_submit').text('注册成功');
+                    $('#signup_submit').attr('disabled',true);
+                    $('#signup_email').attr('disabled',true);
+                    $('#signup_passwd').attr('disabled',true);
+                    $('#signup_passwd2').attr('disabled',true);
+                    var timer_hide = setTimeout(function() {
+                            $('#signin_email').val(signup_email);
+                            $('#signin_form').css('display','block');
+                            $('#signup_form').css('display','none');
+                            $("#signin_passwd").focus();
+                        }, 1000);
+                }else{
+                    $('#signup_submit').text('注册');
+                    $('#signup_submit').attr('disabled',false);
+                }
+            },
+            error: function(){
+                $('#signup_submit').text('注册');
+                $('#signup_submit').attr('disabled',false);
+                $('#signup_msg').text('p_msg["err_500"]');
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#signup_submit').attr('disabled',true);
+                $('#signup_submit').text('正在注册...');
+                $('#signup_msg').text('正在注册...');
+            },
+        }; 
+        $('#signup_form').ajaxSubmit(options); 
+        return false;
+    });
+});
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+
+<div class="rgbase container">
+    <div class="rgindex row" >
+        <div class="col-lg-7" style="padding-top:120px;">
+            <div class="col-lg-10 col-lg-offset-2">
+                <a href="{{p_url['http_www']+p_url['guest_main']}}"><img class="pull-left" style="width:380px;height:130px;" src="/img/shimosheji/logo_380.gif"></a>
+            </div>
+            <div class="muted text-center" >
+                <h5 style="line-height:50px;">游&nbsp;戏&nbsp;&nbsp;&nbsp;&nbsp;动&nbsp;漫&nbsp;&nbsp;&nbsp;&nbsp;电&nbsp;影&nbsp;主&nbsp;题&nbsp;公&nbsp;园</h5>
+            </div>
+        </div>
+        <div class="col-lg-5" style="padding-bottom:40px;">
+            <div style="margin-top:60px;">
+                <h4 style="font-family:'微软雅黑';margin-bottom:10px;"><strong>引爆无线潜力，释放<font class="rgfontT">app</font>能量</strong></h4>
+                <label class="muted rglabel">正版商品装进应用，</label>
+                <label class="muted rglabel"><font class="rgfontT">O2O</font>一键实现，</label>
+                <label class="muted rglabel">稳定的营销后台助您流量变现。</label>
+                <br/>
+                <p class="">这一切都是如此<strong class="rglink rgfont16"> 简单</strong></p>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-lg-4 text-left">
+                    <a href="{{p_url['guest_sdk_download']}}" style="display:block;"><img style="width: 100px; height: 100px;margin-bottom:5px;" src="/img/shimosheji/download.gif"></a>
+                    <p><a class="rglink rgfont12" href="{{p_url['guest_sdk_download']}}"><strong><font class="rgfontT">1. </font>下载<font class="rgfontT">SDK</font></strong></a></p>
+                    <p class="muted rgfont12">添加到你的<font class="rgfontT">app</font></p>
+                </div>
+                <div class="col-lg-4 col-lg-offset-2 text-left">
+                    <a href="{{p_url['host_home_list_admin']}}" style="display:block;"><img class="" style="width: 100px; height: 100px;margin-bottom:5px;" src="/img/shimosheji/link.gif"></a>
+                    <p><a class="rglink rgfont12" href="{{p_url['host_home_list_admin']}}"><strong><font class="rgfontT">2. </font>添加链接</strong></a></p>
+                    <p class="muted rgfont12">只需填入淘宝链接</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rgopbar row" >
+        <form id="signin_form" class="container">
+            {% raw xsrf_form_html() %}
+            <div class="row" style="height:30px;padding-top:5px;" >
+                <div class="col-lg-3 col-lg-offset-2"><label class="rglabel text-danger" id="signin_msg"></label></div>
+                <div class="col-lg-3"> <input type="text" id="signin_s_passwd" class="hidden" name="passwd"  value=""></div>
+            </div>
+            {% if p_session == None %}
+            <div class="row" >
+                <div class="col-lg-3 col-lg-offset-2">
+                    <div class="input-group">
+                        <span class="input-group-addon" style="height:33px;background-color:#ffffff;border-radius: 2px 0 0 2px;"><img src="/img/shimosheji/user.gif" style="width:33px;height:33px;"></span>
+                        <input class="form-control rginput" type="text" id="signin_email" name="email" placeholder="邮箱">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" style="height:33px;background-color:#ffffff;border-radius: 2px 0 0 2px;"><img src="/img/shimosheji/passwd.gif" style="width:33px;height:33px;"></span>
+                        <input class="form-control rginput" type="password" id="signin_passwd" placeholder="密码">
+                    </div>
+                </div>
+                <div class="col-lg-2"> <button type="submit" id="signin_submit" class="rgbtn">登 录</button> </div>
+                <div class="col-lg-2"> <a id="signup_btn" class="rglink" href="javascript:void(0)" style="line-height:47px;font-size:14px;">注册</a> </div>
+            </div>
+            <div class="row" style="height:30px;padding-top:5px;" >
+                <div class="col-lg-3 col-lg-offset-2">
+                    <input id="rememberme" type="checkbox" name="rememberme" value="on">
+                    <span class="rglink rgfont12">自动登录</span>
+                </div>
+                <div class="col-lg-3"> <a href="{{p_url['user_guest_findpwd']}}" class="rglink rgfont12">忘记密码</a> </div>
+            </div>
+            {% else %}
+            <div class="row" >
+                <ul class="list-inline pull-right" style="margin-right:40px;">
+                <li style="color:#ffffff;"><label class="rglabel pull-right" style="margin-bottom:0px;">{{p_session['email']}}</label></li>
+                {% if p_isAdmin %}
+                <li> <a class="rglink pull-right" href="{{p_url['miniset_wzd_host_admin']}}">石墨活动</a> </li>
+                <li> <a class="rglink pull-right" href="{{p_url['host_home_list_admin']}}">我要神器</a> </li>
+                <li> <a class="rglink pull-right" href="{{p_url['host_topic_admin']}}">玩具控</a> </li>
+                {% else %}
+                <li> <a class="rglink pull-right" href="{{p_url['host_home_list_admin']}}">我的列表</a> </li>
+                {% end %}
+                <li> <a class="rglink pull-right" href="{{p_url['user_guest_signout']}}">切换账号</a> </li>
+                </ul>
+            </div>
+            {% end %}
+        </form>
+        <form id="signup_form" class="container" style="display:none;">
+            {% raw xsrf_form_html() %}
+            <div class="row" style="height:30px;padding-top:5px;" >
+                <div class="col-lg-4"><label class="rglabel text-danger" id="signup_msg"></label></div>
+                <div class="col-lg-8"> <input type="text" id="signup_s_passwd" class="hidden" name="passwd"  value=""></div>
+            </div>
+            <div class="row" >
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" style="height:33px;background-color:#ffffff;border-radius: 2px 0 0 2px;"><img src="/img/shimosheji/user.gif" style="width:33px;height:33px;"></span>
+                        <input class="form-control rginput" type="text" id="signup_email" name="email" placeholder="邮箱">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" style="height:33px;background-color:#ffffff;border-radius: 2px 0 0 2px;"><img src="/img/shimosheji/passwd.gif" style="width:33px;height:33px;"></span>
+                        <input class="form-control rginput" type="password" id="signup_passwd" placeholder="密码">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" style="height:33px;background-color:#ffffff;border-radius: 2px 0 0 2px;"><img src="/img/shimosheji/passwd.gif" style="width:33px;height:33px;"></span>
+                        <input class="form-control rginput" type="password" id="signup_passwd2" placeholder="再次输入密码">
+                    </div>
+                </div>
+                <div class="col-lg-2"> <button type="submit" id="signup_submit" class="rgbtn">注册</button> </div>
+                <div class="col-lg-1"> <a id="signin_btn" class="rglink" href="javascript:void(0)" style="line-height:47px;font-size:14px;">返回登录</a> </div>
+            </div>
+            <div class="row" style="height:30px;padding-top:5px;" >
+            </div>
+        </form>
+    </div>
+</div> <!-- /rgbase-->
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

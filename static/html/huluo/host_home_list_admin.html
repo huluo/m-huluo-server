@@ -1,0 +1,238 @@
+{% extends "host_base.html" %}
+{% block head %}
+<title>石墨设计&middot;个人主页</title>
+<style type="text/css">
+</style>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    reload();
+});
+function reload() { 
+    var empty_pfx = '<table class="table"> <thead> <tr> <th>列表名</th> <th>添加时间</th> <th>个数</th> <th class="text-right">浏览 - 点击 - 跳转&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> <th class="text-right">操作</th> </tr> </thead>'
+
+    $('#adminbox').html( empty_pfx+'<tbody><tr><td class="rgcenter" colspan=5><h5>正在加载数据 ...</h5></td></tr></tbody></table>' )
+    $.ajax({
+        url      : '{{p_url["host_home_list_info"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf')},
+        dataType : 'html',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        $('#adminbox').html( empty_pfx+'<tbody><tr onclick="reload()"><td class="rgcenter" colspan=8><h5>加载超时，点击刷新</h5></td></tr></tbody></table>' )
+                   },
+        success  : function(result){
+                        $('#adminbox').html( result );
+                    }
+    });
+}
+function list_sort_click(appkey,goingdown){
+    p = {};
+    if( goingdown ){
+        p = {'_xsrf':getCookie('_xsrf'),'appkey':appkey,'goingdown':goingdown};
+    } else {
+        p = {'_xsrf':getCookie('_xsrf'),'appkey':appkey};
+    }
+    $.ajax({
+        url      : '{{p_url["api_home_list_sort"]}}',
+        type     : 'POST',
+        data     : p,
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            $('#adminbox').html( result.res );
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+function list_del_click(appid,appkey,name){
+    $('#list_del_modal').attr( 'appid', appid );
+    $('#list_del_modal').attr( 'appkey', appkey );
+    $('#list_del_title').text( name );
+    $('#list_del_modal').modal( 'toggle' );
+}
+function list_del_ok(){
+    $('#list_del_modal').modal('hide');
+    $.ajax({
+        url      : '{{p_url["api_home_list_del"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':$('#list_del_modal').attr('appid'),'appkey':$('#list_del_modal').attr('appkey')},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+function list_del_cancel(){
+    $('#list_del_modal').modal('hide');
+}
+function list_name_click(appid){
+    $('#rid_list_'+appid+'_name_edit').show();
+    $('#rid_list_'+appid+'_name_op').show();
+    $('#rid_list_'+appid+'_name_edit').val($('#rid_list_'+appid+'_name_text').text());
+    $('#rid_list_'+appid+'_name').hide();
+    $('#rid_list_'+appid+'_id').hide();
+}
+function list_name_ok(appid){
+    var list_name = $('#rid_list_'+appid+'_name_edit').val();
+    if(list_name.length <= 0){
+        alert('app名不能为空');
+        return false;
+    }
+    if(list_name.length > 20){
+        alert('app名过长,请控制在20个字符以内');
+        return false;
+    }
+    $.ajax({
+        url      : '{{p_url["api_home_list_update"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':appid,'list_name':list_name},
+        dataType : 'json',
+        timeout  : 5000,
+        success  : function(data){
+            if( data.op==true){
+                reload();
+            }else{
+                alert(data.msg);
+            }
+        },
+        error    : function(){
+            alert('{{p_msg["err_500"]}}');
+        },
+        beforeSubmit: function(formData, jqForm, options){
+            //$('#nodeadd_url').attr('disabled',true);
+        },
+    });
+}
+function list_name_cancel(appid) {
+    $('#rid_list_'+appid+'_name_edit').hide();
+    $('#rid_list_'+appid+'_name_op').hide();
+    $('#rid_list_'+appid+'_name').show();
+    $('#rid_list_'+appid+'_id').show();
+}
+function make_list_entry(appid,appkey){
+    $.ajax({
+        url      : '{{p_url["api_home_list_entry"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':appid,'appkey':appkey},
+        dataType : 'json',
+        timeout  : 5000,
+        success  : function(data){
+            if( data.op==true){
+                reload();
+            }else{
+                alert(data.msg);
+            }
+        },
+        error    : function(){
+            alert('{{p_msg["err_500"]}}');
+        },
+        beforeSubmit: function(formData, jqForm, options){
+            //$('#nodeadd_url').attr('disabled',true);
+        },
+    });
+}
+function list_rebuild_click(appid,appkey){
+    $.ajax({
+        url      : '{{p_url["api_home_list_rebuild"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':appid,'appkey':appkey},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            //reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            //reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+}
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<!-- Modal -->
+<div id="list_del_modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-muted">删除此列表？</h4>
+            </div>
+            <div class="modal-body">
+                <dl>
+                    <dt class="text-muted">列表名：</dt>
+                    <dd id="list_del_title"></dd>
+                </dl>
+                <dl>
+                    <dt class="text-muted">您需要了解：</dt>
+                    <dd>- 列表被删除后,对应的数据也将被删除；</dd>
+                    <dd>- 使用该列表的石墨设计客户端，将不再展示该列表的商品；</dd>
+                    <dd>- 删除操作不可撤销；</dd>
+                </dl>
+                <p class="text-danger"><br>是否删除？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="rgbtn btn btn-primary" onclick="list_del_ok()" >删除</button>
+                <button type="button" class="btn btn-link rglink" data-dismiss="modal" onclick="list_del_cancel()" >取消</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="rgbase">
+    <ul class="nav nav-pills rgsubnav">
+        <li class="active"><a>列表管理</a></li>
+    </ul>
+    <div class="rgmain">
+        <ul class="breadcrumb">
+            <li><a class="rglink" href="{{p_url['host_home']}}">&lt;&nbsp;返回</a></li>
+        </ul>
+        <div id="adminbox" class="table-responsive">
+        </div>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

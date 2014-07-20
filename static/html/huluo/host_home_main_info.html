@@ -1,0 +1,268 @@
+<table class="table">
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#node_add_form').submit(function() { 
+        var node_add_url= $('#node_add_url').val();
+        if(node_add_url.length <= 0){
+            $('#node_add_submit_msg').text('链接不能为空');
+            return false;
+        }
+        /*
+        var urlPat =  /^http:\/\/([a-zA-Z0-9_-])+/;
+        var matchArray = node_add_url.match(urlPat);
+        if(matchArray==null){
+            $('#node_add_submit_msg').text('链接格式有误,请输入商品的淘宝链接');
+            return false;
+        }
+        */
+        var options = { 
+            url      : '{{p_url["api_home_main_add"]}}',
+            type     : 'POST', 
+            dataType : 'json',
+            success  : function(data){
+                $('#node_add_submit_msg').text(data.msg);
+                $('#node_add_submit').attr('disabled',false);
+                $('#node_add_url').attr('disabled',false);
+                if( data.op==true){
+                    $('#node_add_submit').text('解析成功');
+                    reload();
+                }else{
+                    $('#node_add_submit').text('解析');
+                }
+            },
+            error    : function(){
+                $('#node_add_submit').text('解析');
+                $('#node_add_submit_msg').text('p_msg["err_500"]');
+                $('#node_add_submit').attr('disabled',false);
+                $('#node_add_url').attr('disabled',false);
+            },
+            beforeSubmit: function(formData, jqForm, options){
+                $('#node_add_submit').text('正在解析...');
+                $('#node_add_submit').attr('disabled',true);
+                $('#node_add_url').attr('disabled',true);
+            },
+        }; 
+        $('#node_add_form').ajaxSubmit(options); 
+        return false;
+    });
+
+    {% for i in p_listnode['links'] %}
+    {% set t_urlid = i['urlid'] %}
+        $('#node_rebuild_form_'+{{t_urlid}}).submit(function() { 
+            var node_rebuild_url= $('#node_rebuild_url_'+{{t_urlid}}).val();
+            if(node_rebuild_url.length <= 0){
+                $('#node_rebuild_submit_msg_'+{{t_urlid}}).text('链接不能为空');
+                return false;
+            }
+            var options = { 
+                url      : '{{p_url["api_home_main_rebuild"]}}',
+                type     : 'POST', 
+                dataType : 'json',
+                success  : function(data){
+                    $('#node_rebuild_submit_msg_'+{{t_urlid}}).text(data.msg);
+                    $('#node_rebuild_submit_'+{{t_urlid}}).attr('disabled',false);
+                    $('#node_rebuild_url_'+{{t_urlid}}).attr('disabled',false);
+                    if( data.op==true){
+                        $('#node_rebuild_submit_'+{{t_urlid}}).text('解析成功');
+                        reload();
+                    }else{
+                        $('#node_rebuild_submit_'+{{t_urlid}}).text('解析');
+                    }
+                },
+                error    : function(){
+                    $('#node_rebuild_submit_'+{{t_urlid}}).text('解析');
+                    $('#node_rebuild_submit_msg_'+{{t_urlid}}).text('p_msg["err_500"]');
+                    $('#node_rebuild_submit_'+{{t_urlid}}).attr('disabled',false);
+                    $('#node_rebuild_url_'+{{t_urlid}}).attr('disabled',false);
+                },
+                beforeSubmit: function(formData, jqForm, options){
+                    $('#node_rebuild_submit_'+{{t_urlid}}).text('正在解析...');
+                    $('#node_rebuild_submit_'+{{t_urlid}}).attr('disabled',true);
+                    $('#node_rebuild_url_'+{{t_urlid}}).attr('disabled',true);
+                },
+            }; 
+            $('#node_rebuild_form_'+{{t_urlid}}).ajaxSubmit(options); 
+            return false;
+        });
+    {% end %}
+});
+function hide_node_add(){
+    $('#node_add_url').val('');
+    $('#node_add_submit_msg').text('');
+    $('#node_add_collapse').collapse('hide');
+}
+function node_edit_click(urlid) {
+    var new_desc = $('#rid_done_'+urlid+'_desc').text();
+    if(new_desc == "{{p_msg['no_desc']}}"){
+        new_desc = "";
+    }
+    $('#rid_edit_'+urlid+'_desc').val(new_desc);
+    $('#rid_'+urlid+'_edit').show();
+    $('#rid_'+urlid+'_done').hide();
+}
+function node_edit_ok(urlid){
+    var new_desc = $('#rid_edit_'+urlid+'_desc').val();
+    var new_topicid = $('#rid_dropdown_'+urlid).attr('sel');
+    if( new_desc.length > 100 ){
+        alert( '自定义描述请控制在100字以内' );
+        return;
+    }
+    $.ajax({
+        url      : '{{p_url["api_home_main_update"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':{{p_listnode['appid']}},'urlid':urlid,'new_desc':new_desc,'new_topicid':new_topicid},
+        dataType : 'json',
+        timeout  : 5000,
+        beforeSubmit: function(formData, jqForm, options){
+            //$('#nodeadd_url').attr('disabled',true);
+        },
+        success  : function(result){
+                        reload();
+                        /*
+                        if( data.op==true){
+                        }else{
+                        }
+                        */
+                    },
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        $('#rid_'+topicid+'_done').show();
+                        $('#rid_'+topicid+'_edit').hide();
+                        reload();
+                   },
+    });
+}
+function node_edit_cancel(urlid){
+    $('#rid_'+urlid+'_done').show();
+    $('#rid_'+urlid+'_edit').hide();
+}
+function hide_node_rebuild(urlid){
+    $('#node_rebuild_url_'+urlid).val('');
+    $('#node_rebuild_submit_msg_'+urlid).text('');
+    $('#node_rebuild_collapse_'+urlid).collapse('hide');
+}
+function TopicClick(urlid,title,topicid){ 
+    $('#rid_dropdown_'+urlid).text(title);
+    $('#rid_dropdown_'+urlid).attr('sel',topicid);
+}
+</script>
+<thead>
+    <tr>
+        <th style="width:120px">图片</th>
+        <th style="max-width:200px">标题</th>
+        <th>淘宝链接</th>
+        <th>关联报导</th>
+        <th style="width:120px">自定义描述</th>
+        <th style="width:80px">操作</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td colspan=6>
+            <div class="accordion-group">
+                <div class="accordion-heading rgcenter">
+                    <a class="accordion-toggle rglink" data-toggle="collapse" data-parent="#accordion2" href="#node_add_collapse"> + 添加商品 </a>
+                </div>
+                <div id="node_add_collapse" class="row accordion-body collapse">
+                    <form id="node_add_form" class="col-lg-4 col-lg-offset-4">
+                        {% raw xsrf_form_html() %}
+                        <div class="form-group">
+                            <label for="node_add_name">淘宝链接</label>
+                            <input type="text" class="form-control" id="node_add_url" name="url" placeholder="根据您填写的链接，将自动解析名字，图片及相关信息">
+                            <label class="text-danger" id="node_add_submit_msg"></label>
+                        </div>
+                        <div class="pull-left" style="margin-bottom:30px;">
+                            <button type="submit" id="node_add_submit" class="rgbtn btn btn-primary">添加</button>
+                            <button type="button" class="btn btn-link rglink" onclick="hide_node_add()" >取消</button>
+                        </div>
+                        <input type="text" class="hidden" name="appid" value="{{p_listnode['appid']}}">
+                    </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% for i in p_listnode['links'] %}
+    {% set t_url = i['url'] %}
+    {% set t_urlid = i['urlid'] %}
+    {% set t_iid  = i['iid'] %}
+    {% set t_urlitem = p_urlitems[t_urlid] %}
+    {% set t_pic_url = t_urlitem['pic_url'] %}
+    {% set t_title = t_urlitem['title'] %}
+    {% set t_desc = t_urlitem['desc'] %}
+    {% set t_detail_url = t_urlitem['detail_url'] %}
+    {% set t_topicid = i['topic'] %}
+    {% set t_topic_index = p_topic_info['index'][t_topicid] %}
+    {% set t_topic = p_topic_info['topics'][t_topic_index] %}
+    <tr id="rid_{{t_urlid}}_done">
+        <td style="width:120px">
+            <div class="rgimgbox" style="width:100px;height:100px;"><div class="rgimgbox_pos"><div>
+            <img style="display:none" src="{{t_pic_url}}" onload="DrawImage(this)" />
+            </div></div></div>
+        </td>
+        <td style="max-width:200px"><span>{{t_title}}</span></td>
+        <td style="width:120px;word-wrap:break-word"> <a class="rglink" href="{{t_detail_url}}" target="_blank"> {{t_detail_url}} </a> </td>
+        <td>{{t_topic['title']}}</td>
+        {% if not t_desc %}
+            <td class="text-muted"><span id="rid_done_{{t_urlid}}_desc">{{p_msg['no_desc']}}</span></td>
+        {% else %}
+            <td><span id="rid_done_{{t_urlid}}_desc">{{t_desc}}</span></td>
+        {% end %}
+        <td style="width:80px">
+            <div><a class="rglink" href="javascript:void(0)" onclick="node_edit_click({{t_urlid}})">编辑</a><img src="/img/shimosheji/up.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="node_sort_click({{t_urlid}},false)"></div>
+            <div style="height:10px"></div>
+            <div><a class="rglink" href="javascript:void(0)" onclick="node_del_click({{t_urlid}},'{{t_pic_url}}','{{t_title}}')">删除</a><img src="/img/shimosheji/down.png" class="img-circle" style="width:20px;height:20px;margin-left:15px;cursor:pointer;" onclick="node_sort_click({{t_urlid}},true)"></div>
+        </td>
+    </tr>
+    <tr id="rid_{{t_urlid}}_edit" style="display:none;">
+        <td style="width:120px">
+            <div class="rgimgbox" style="width:100px;height:100px;"><div class="rgimgbox_pos"><div>
+            <img src="{{t_pic_url}}" onload="DrawImage(this)" />
+            </div></div></div>
+        </td>
+        <td style="max-width:200px"><span>{{t_title}}</span></td>
+        <td style="width:120px;word-wrap:break-word"> <a class="rglink" href="{{t_detail_url}}" target="_blank"> {{t_detail_url}} </a> </td>
+        <td>
+            <div class="btn-group">
+                <button type="button" id="rid_dropdown_{{t_urlid}}" sel="{{t_topic['topicid']}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{t_topic['title']}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                {% for tt_topic in p_topic_info['topics'] %}
+                    <li><a href="#" onclick="TopicClick({{t_urlid}},'{{tt_topic['title']}}',{{tt_topic['topicid']}})" >{{tt_topic['title']}}</a></li>
+                {% end %}
+                </ul>
+            </div>
+        </td>
+        <td style="width:120px;"><textarea id="rid_edit_{{t_urlid}}_desc"></textarea></td>
+        <td style="width:80px">
+            <div><a class="rglink" href="javascript:void(0)" onclick="node_edit_ok({{t_urlid}})">确定</a></div>
+            <div><a class="rglink" href="javascript:void(0)" onclick="node_edit_cancel({{t_urlid}})">取消</a></div>
+        </td>
+    </tr>
+    <tr id="rid_{{t_urlid}}_rebuild">
+        <td colspan=6 style="border-top:none;">
+            <div class="accordion-group">
+                <div class="accordion-heading rgcenter">
+                    <a class="accordion-toggle rglink" data-toggle="collapse" data-parent="#accordion2" href="#node_rebuild_collapse_{{t_urlid}}"> + 重建商品 </a>
+                </div>
+                <div id="node_rebuild_collapse_{{t_urlid}}" class="row accordion-body collapse">
+                    <form id="node_rebuild_form_{{t_urlid}}" class="col-lg-4 col-lg-offset-4">
+                        {% raw xsrf_form_html() %}
+                        <div class="form-group">
+                            <input type="text" class="hidden" name="urlid" value="{{t_urlid}}">
+                            <input type="text" class="form-control" id="node_rebuild_url_{{t_urlid}}" name="url" placeholder="根据您填写的链接，将自动解析名字，图片及相关信息">
+                            <label class="text-danger" id="node_rebuild_submit_msg_{{t_urlid}}"></label>
+                        </div>
+                        <div class="pull-left" style="margin-bottom:30px;">
+                            <button type="submit" id="node_rebuild_submit_{{t_urlid}}" class="rgbtn btn btn-primary">添加</button>
+                            <button type="button" class="btn btn-link rglink" onclick="hide_node_rebuild('{{t_urlid}}')" >取消</button>
+                        </div>
+                        <input type="text" class="hidden" name="appid" value="{{p_listnode['appid']}}">
+                    </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% end %}
+    <tr> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+</tbody>
+</table>

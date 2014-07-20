@@ -1,0 +1,82 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;影视剧搜同款</title>
+<link href="css/least.min.css" rel="stylesheet" />
+<link href="css/video-js.min.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+html, body, #ridwrap {
+    height: 100%;
+}
+body > #ridwrap {
+    height: auto;
+    min-height: 100%;
+    background-image:url('/img/shimosheji/emotion_bg.png');
+    background-repeat:no-repeat;
+    background-position:bottom center;
+    background-color:#ffffff;
+}
+#ridmain {
+    padding-bottom: 5px;
+} /* 必须使用和ridbot相同的高度 */ 
+#ridbot {
+    position: relative; 
+    background-color:#333333;
+    margin-top: -5px; /* ridbot高度的负值 */ 
+    height: 5px;
+    clear:both;
+}
+.clearfix:after {
+    ridcon: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}
+.rgplay {
+    margin: 0px auto ;
+    min-width: 480px;
+    max-width: 480px;
+}
+/* End hide from IE-mac */
+
+</style>
+<script type="text/javascript">
+require(['jquery','domReady!'], function(doc){
+    videojs.options.flash.swf = "http://static.shimosheji.com/flash/video-js.swf";
+});
+</script>
+<script type="text/javascript"> require(['video_js']); </script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<div id="ridwrap">
+    <div id="ridmain" class="clearfix rgplay">
+        <embed src="http://player.youku.com/player.php/sid/XNjI0NjY1Mjcy/v.swf" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash" style="margin-top:90px;">
+        </embed>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+

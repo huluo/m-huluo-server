@@ -1,0 +1,35 @@
+<label id="{{p_moai_fn[0]['appkey']}}" style="display:none;" follow="{{p_moai_fn[0]['pf']}}" />
+{% set t_appid = p_moai_fn[0]['appid'] %}
+{% set t_len = len(p_moai_fn) %}
+{% for t_i in range(1,t_len) %}
+{% set t_iid = p_moai_fn[t_i]['num_iid'] %}
+{% set t_desc = p_moai_fn[t_i]['desc'] %}
+{% set t_title = p_moai_fn[t_i]['title'] %}
+{% set t_price = p_moai_fn[t_i]['price'] %}
+{% set t_urlid = p_moai_fn[t_i]['urlid'] %}
+{% set t_si = p_moai_fn[t_i]['si'] %}
+{% set t_item_imgs = p_moai_fn[t_i]['item_imgs']['item_img'] %}
+{% set t_imgs = [ '\''+t_item_imgs[t_j]['url']+'\'' for t_j in t_si ] %}
+<li>
+    <div class="rgimgbox rgfn" onclick="ItemClick('{{t_appid}}','{{t_urlid}}','{{t_title}}')"><div class="rgimgbox_pos"><div> {% if t_i < t_len %}
+    <img src="{{t_item_imgs[t_si[0]]['url']}}" style="display:none;" onload="DrawImage(this)" />
+    <div class="infoLayer" style="width:100%;" >
+        <div style="text-align:left;height:90px;background-color:black;">
+        <ul>
+            <li>
+                <label>{{t_desc}}</label>
+                <span style="position:absolute;right:0px;">
+                    <img style="position:relative;margin:0px;width:16px;height:14px;" src="/img/shimosheji/like2.png"></img>
+                    <label>{{len(p_responses_fn[t_i-1]['likes'])}}</label>
+                    <img style="position:relative;margin:0px;width:14px;height:14px;" src="/img/shimosheji/reply2.png"></img>
+                    <label>{{len(p_responses_fn[t_i-1]['replies'])}}</label>
+                </span>
+            </li>
+            <li><label>{{t_title}}</label></li>
+        </ul>
+        </div>
+    </div>
+    {% end %}
+    </div></div></div>
+</li>
+{% end %}

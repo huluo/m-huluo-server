@@ -1,0 +1,197 @@
+{% extends "guest_base.html" %}
+{% block head %}
+<title>石墨设计&middot;影视剧搜同款</title>
+<script type="text/javascript">
+function app_del_click(appid,appkey,name){
+    {% if p_appinfos != None %}
+    $('#appdel_modal').attr( 'appid', appid );
+    $('#appdel_modal').attr( 'appkey', appkey );
+    $('#appdel_title').text( name );
+    $('#appdel_modal').modal( 'toggle' );
+    {% end %}
+}
+function app_del_ok(){
+    {% if p_appinfos != None %}
+    $('#appdel_modal').modal('hide');
+    $.ajax({
+        url      : '{{p_url["api_appdel"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':$('#appdel_modal').attr('appid'),'appkey':$('#appdel_modal').attr('appkey')},
+        dataType : 'json',
+        timeout  : 5000,
+        error    : function(xmlHttpRequest,textStatus,errorThrown){
+                        if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0){
+                            location.reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                   },
+        success  : function(result){
+                        if( result.op==true){
+                            location.reload();
+                        }else{
+                            alert('{{p_msg["err_timeout"]}}');
+                        }
+                    }
+    });
+    {% end %}
+}
+function app_del_cancel(){
+    {% if p_appinfos != None %}
+    $('#appdel_modal').modal('hide');
+    {% end %}
+}
+function app_name_click(appid) {
+    {% if p_appinfos != None %}
+    $('#rid_app_'+appid+'_name_edit').show();
+    $('#rid_app_'+appid+'_name_op').show();
+    $('#rid_app_'+appid+'_name_edit').val($('#rid_app_'+appid+'_name_text').text());
+    $('#rid_app_'+appid+'_name').hide();
+    $('#rid_app_'+appid+'_id').hide();
+    {% end %}
+}
+function app_name_ok(appid){
+    {% if p_appinfos != None %}
+    var app_name = $('#rid_app_'+appid+'_name_edit').val();
+    if(app_name.length <= 0){
+        alert('app名不能为空');
+        return false;
+    }
+    if(app_name.length > 20){
+        alert('app名过长,请控制在20个字符以内');
+        return false;
+    }
+    $.ajax({
+        url      : '{{p_url["api_appupdate"]}}',
+        type     : 'POST',
+        data     : {'_xsrf':getCookie('_xsrf'),'appid':appid,'app_name':app_name},
+        dataType : 'json',
+        timeout  : 5000,
+        success  : function(data){
+            if( data.op==true){
+                location.reload();
+            }else{
+                alert(data.msg);
+            }
+        },
+        error    : function(){
+            alert('{{p_msg["err_500"]}}');
+        },
+        beforeSubmit: function(formData, jqForm, options){
+            //$('#nodeadd_url').attr('disabled',true);
+        },
+    });
+    {% end %}
+}
+function app_name_cancel(appid) {
+    {% if p_appinfos != None %}
+    $('#rid_app_'+appid+'_name_edit').hide();
+    $('#rid_app_'+appid+'_name_op').hide();
+    $('#rid_app_'+appid+'_name').show();
+    $('#rid_app_'+appid+'_id').show();
+    {% end %}
+}
+</script>
+{% end %}
+
+{% block location %}
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block body %}
+<!-- Modal -->
+<div id="appdel_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="muted">删除此列表？</h4>
+    </div>
+    <div class="modal-body">
+        <dl>
+            <dt class="muted">列表名：</dt>
+            <dd id="appdel_title"></dd>
+        </dl>
+        <dl>
+            <dt class="muted">您需要了解：</dt>
+            <dd>- 列表被删除后,对应的数据也将被删除；</dd>
+            <dd>- 使用该列表的appkey发布了的客户端，将不再展示商品；</dd>
+            <dd>- 删除操作不可撤销；</dd>
+        </dl>
+        <p>
+            <br class="muted">是否删除？
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:void(0)" onclick="app_del_cancel()" class="btn">取消</a>
+        <a href="javascript:void(0)" onclick="app_del_ok()" class="btn btn-primary btn-success">删除</a>
+    </div>
+</div>
+
+<div class="rgbase">
+    <ul class="nav nav-pills rgsubnav">
+        <li class="active"><a>列表管理</a></li>
+    </ul>
+    <div class="rgmain">
+        <ul class="breadcrumb">
+            <li class="active">全部列表</li>
+        </ul>
+        <table class="table table-hover">
+        <thead>
+            <tr>
+                <th width="300px">列表名</th>
+                <th width="80px">添加时间</th>
+                <th width="30px">个数</th>
+                <th class="text-right">浏览 - 点击 - 跳转&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th class="text-right">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if p_appstats != None %}
+            {% for i in p_appstats %}
+            {% set t_appkey = i['appkey'] %}
+            {% set t_appid =  i['appid'] %}
+            {% set t_name =   i['name'] %}
+            {% set t_atime =  i['atime'] %}
+            {% set t_appkey = i['appkey'] %}
+            {% set t_links =  i['links'] %}
+            <tr>
+                <td>
+                    <span id="rid_app_{{t_appid}}_name"><b id="rid_app_{{t_appid}}_name_text">{{t_name}}</b><a href="javascript:void(0)" onclick="app_name_click({{t_appid}})">&nbsp;[修改]</a></span>
+                    <h6 id="rid_app_{{t_appid}}_id" class="muted">appkey: {{t_appkey}}</h6>
+                    <textarea id="rid_app_{{t_appid}}_name_edit" style="height:40px;display:none;"></textarea>
+                    <ul class="inline" id="rid_app_{{t_appid}}_name_op" style="display:none;">
+                        <li><button class="rgbtn" style="width:80px;height:30px;" onclick="app_name_ok({{t_appid}})">修改</button></li>
+                        <li><button class="rgbtn" style="width:80px;height:30px;" onclick="app_name_cancel({{t_appid}})">取消</button></li>
+                    </ul>
+                </td>
+                <td>{{t_atime}}</td>
+                <td>{{len(t_links)}}</td>
+                <td class="text-right">
+                    <span>{{i['st_v']}}&nbsp;-&nbsp;{{i['st_c']}}&nbsp;-&nbsp;{{i['st_l']}}</span>
+                    <a href="{{p_url['host_appstat']+'?appid='+str(i['appid'])}}" >[详细]</a>
+                </td>
+                <td class="text-right">
+                    <ul class="inline" style="margin:0px;">
+                    <li><a href="{{p_url['guest_items']+'?appid='+str(t_appid)}}" target="_blank">预览</a></li>
+                    <li><a href="{{p_url['host_appadmin']+'?appid='+str(t_appid)}}">管理</a></li>
+                    <li><a href="javascript:void(0)" onclick="app_del_click({{t_appid}},'{{t_appkey}}','{{t_name}}')">删除</a></li>
+                    </ul>
+                </td>
+            </tr>
+            {% end %}
+            {% end %}
+            <tr> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{% end %}
+
+{% block footer %}
+{% end %}
+
